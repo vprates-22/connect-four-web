@@ -1,1 +1,2 @@
-# connect-four-web
+# Connect Four (Multiplayer web)
+
