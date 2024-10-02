@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Room</title>
+</head>
+<body>
+    <textarea id="chat-log" cols="100" rows="20"></textarea><br>
+    <script>
+        const socket = new WebSocket(
+            'ws://'
+            + window.location.host
+            + '/ws/create/'
+            + '5/5'
+            + '/'
+        )
+
+        socket.onmessage = function(e){
+            const data = JSON.parse(e.data);
+            document.querySelector('#chat-log').value += (data.message + '\n');
+        }
+
+
+
+    </script>
+</body>
+</html>
