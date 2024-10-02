@@ -16,8 +16,9 @@ class PlayerBase(AsyncWebsocketConsumer):
     async def connect(self):
         await self._create_variables()
 
-        if self.room_id == -1:
-            self.failed_to_connect = True
+        if self.failed_to_connect:
+            await self.accept()
+            await self._send_error_message(self.message)
             await self.close()
             return
 
@@ -33,6 +34,12 @@ class PlayerBase(AsyncWebsocketConsumer):
     async def _send_message_after_connection(self):
         pass
 
+    async def _send_error_message(self, msg):
+        await self.send(text_data=json.dumps({
+            'type' : 'error',
+            'message' : msg
+        }))
+
     async def warn_player(self, event):
         await self.send(text_data=json.dumps(
         {
@@ -43,10 +50,8 @@ class PlayerBase(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         # game_manage
-        data = json.loads(text_data)
+        # data = json.loads(text_data)
         self.send(text_data=text_data)
-
-        print(data)
 
         # await self.channel_layer.group_send(
         #     self.game_room, {'type' : 'broadcast.move', 
@@ -58,7 +63,7 @@ class PlayerBase(AsyncWebsocketConsumer):
         #                     }
         # )
 
-    async def broadcast_move(self, event):
+    async def _broadcast_move(self, event):
         await self.send(text_data=json.dumps(
             {
             'type' : 'kill',
@@ -128,6 +133,9 @@ class PlayerOneConsumer(PlayerBase):
                 return room_id
             else:
                 attempt += 1
+
+        self.failed_to_connect = True
+        self.message = 'Unable to generate a room'
         return -1 # almost impossible to reach that point
 
     @staticmethod
@@ -144,22 +152,37 @@ class PlayerTwoConsumer(PlayerBase):
     player = 2
 
     async def _create_variables(self):
-        self.room_id_attempt = self.scope['url_route']['kwargs']['room_id']
-        self.game_room = f'room_{self.room_id_attempt}'
+        self.room_id = self.scope['url_route']['kwargs']['room_id']
+        self.game_room = f'room_{self.room_id}'
 
-        self.room = await sync_to_async(Rooms.objects.filter)(id = self.room_id_attempt)
-        self.room = await sync_to_async(self.room.first)()
-
-        self._check_room_is_valid()
+        await self._check_room_exist()
+        if self.failed_to_connect: return
+                
+        self._check_room_available()
+        if self.failed_to_connect: return
 
         await self._get_game_data()
-
         await self._update_room_data()
 
-    def _check_room_is_valid(self):
+    async def _check_room_exist(self):
+        self.room = await sync_to_async(Rooms.objects.filter)(id = self.room_id)
+        self.room = await sync_to_async(self.room.first)()
+
         if self.room is None:
-            self.room_id = -1
-        self.room_id = self.room_id_attempt
+            self.message = 'Room do not exist'            
+            self.failed_to_connect = True
+        self.room_id = self.room_id
+
+    def _check_room_available(self):
+        if not self.room.active:
+            self.message = 'Room is inactive'
+            self.failed_to_connect = True
+            return
+
+        if self.room.started:
+            self.message = 'Room is full'
+            self.failed_to_connect = True
+            return
 
     async def _get_game_data(self):
         self.height = self.room.height
