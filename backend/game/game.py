@@ -8,7 +8,7 @@ class Board:
         :param height: game board height
         :param width: game board width
         """
-        self.board = np.zeros((height, width))
+        self.board = np.zeros((height, width), dtype=int)
 
         self.heigth = height
         self.width = width
@@ -132,20 +132,28 @@ class Board:
         return self.check_win(x, y)
     
 class Connect4:
-    def __init__(self, height:int, width:int) -> None:
-        self.board = Board(height, width)
+    def __init__(self, height:int = None, width:int = None, state:dict = None) -> None:
+        if state is None:
+            self.NUM_PLAYERS = 2
+            self.board = Board(height, width)
 
-        self.NUM_PLAYERS = 2
+            self._height = height
+            self._width = width
 
-        self._height = height
-        self._width = width
+            self._turn = 1
 
-        self._turn = 1
+            self._game_won = False
+            self._game_winner = None
 
-        self._game_won = False
-        self._game_winner = None
+            self._historical_plays = []
 
-        self._historical_plays = []
+        else:
+            for key, value in state.items():
+                setattr(self, key, value)
+
+    @property
+    def winning_sequence(self) -> list:
+        return self.board._winning_sequence
 
     @property
     def game_won(self) -> bool:
@@ -181,19 +189,6 @@ class Connect4:
         """
         self._turn += 1
 
-    def _get_y(self, x:int) -> int:
-        """
-        Function intended to find out which row the piece will land on
-
-        :param x: x where the piece will be placed
-        :return: the y where the piece will land on
-        """
-        column = self.board.board[::-1, x]
-        # verify if there is empty spaces in that column
-        if np.any(column == 0):
-            return self._height - column.argmin() - 1
-        return -1
-
     def _get_player(self) -> int:
         """
         Funtion intended to identify which player is playing
@@ -224,7 +219,7 @@ class Connect4:
         """
         self._historical_plays.append((player, x, y))
 
-    def make_play(self, x:int) -> int:
+    def make_play(self, x:int, y:int) -> int:
         """
         Function intended to make a play
 
@@ -244,11 +239,11 @@ class Connect4:
         if self._cant_continue():
             return -1
 
-        y = self._get_y(x)
         player = self._get_player()
 
         # verify if it is not possible to place a piece in thar column
-        if y < 0:
+        if y < 0 or y > self._height\
+            or x < 0 or x > self._width:
             return 0
         
         self._save_play(player, x, y)

@@ -1,10 +1,12 @@
 from django.db import models
+from pickle import dumps, loads
 
 class Rooms(models.Model):
     id = models.CharField(max_length=20, unique=True, primary_key=True)
-    player_one = models.TextField()
-    player_two = models.TextField(null=True)
+    player_one = models.CharField(max_length=256)
+    player_two = models.CharField(max_length=256, null=True)
     height = models.IntegerField()
     width = models.IntegerField()
     started = models.BooleanField(default=False)
     active = models.BooleanField(default=True)
+    game_status = models.JSONField(encoder=dumps, decoder=loads)
