@@ -1,3 +1,4 @@
+import numpy
 import json
 import string
 import random
@@ -10,7 +11,6 @@ from asgiref.sync import sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 
 class PlayerBase(AsyncWebsocketConsumer):
-    turn = None
     player = None
     failed_to_connect = False
 
@@ -51,82 +51,82 @@ class PlayerBase(AsyncWebsocketConsumer):
 
     async def receive(self, text_data) -> None:
         data = json.loads(text_data)
-        x = data['x']
-        y = data['y']
+        x = int(data['x'])
 
-        self.state = await sync_to_async(self.room.refresh_from_db)()
-        self.connect4 = Connect4(state = self.state)
+        await self._get_game_state()
 
-        if self.connect4.turn % 2 != self.turn:
-            await self.send(text_data=json.dumps(
-                {
-                'type' : 'error',
-                'message' : 'not your turn to play'
-                }))
-            return
-        
-        play_flag = self.connect4.make_play(x, y)
+        play_return_code = self.connect4.make_play(x, self.player)
+        print(self.connect4.board.board)
 
-        if play_flag == 1:
-            # game won
-            pass
-        elif play_flag == 0:
-            # make move, keep going
-            pass
-        else:
-            # game over without winner
-            pass
+        message = self._get_message(play_return_code, x)
+        if play_return_code < 0:
+            await self._send_error_message()
 
+        await self._send_game_message(x, message)
 
+        await self._save_game_state()    
+
+    def _get_message(self, return_code:int, x:int = None) -> str:
+        return {
+            -2 :  'Invalid move',
+            -1 :  'Wrong turn',
+             0 : f'Player {self.player} : {x}',
+             1 : f'Player {self.connect4.game_winner} WON',
+             2 :  'Its a draw'
+        }[return_code]
+
+    async def _get_game_state(self) -> None:
+        await sync_to_async(self.room.refresh_from_db)()
+        self.connect4 = Connect4(state = self.room.game_state)
+
+    async def _save_game_state(self) -> None:
+        self.room.game_state = self.connect4.serialize()
+        await sync_to_async(self.room.save)()
+
+    async def _send_game_message(self, x:int, message:str) -> None:
         await self.channel_layer.group_send(
             self.game_room, {'type' : 'broadcast.move', 
-                                'player' : self.player,
-                                'x' : x,
-                                'y' : y,
-                                'game_winner' : self.connect4.game_won,
-                                'winning sequence' : self.connect4.winning_sequence,
+                            'player' : self.player,
+                            'x' : x,
+                            'message' : message,
+                            'turn' : self.connect4.turn,
+                            'game_won' : self.connect4.game_won,
+                            'game_winner' : self.connect4.game_won,
+                            'winning sequence' : self.connect4.winning_sequence,
                             }
         )
 
 
-    def game_manage(self):
-        pass
-
     async def broadcast_move(self, event) -> None:
-        await self.send(text_data=json.dumps(
-            {
-            'type' : 'kill',
-            'player' : self.player,
-
-            }))
+        event_copy = {k : v for k, v in event.items()}
+        event_copy['type'] = 'move'
+        await self.send(text_data=json.dumps(event_copy))
 
     async def disconnect(self, close_code) -> None:
         if self.failed_to_connect:
-            await self.close()
             return
 
         self.room.active = False
         await sync_to_async(self.room.save)()
 
         await self.channel_layer.group_send(
-            self.game_room, {'type' : 'disconnect.message'}
+            self.game_room, {'type' : 'disconnect.message', 'player' : self.player}
         )
 
-        await self.channel_layer.group_discard(self.game_room, self.channel_name) 
+        await self.channel_layer.group_discard(self.game_room, self.channel_name)
 
     async def disconnect_message(self, event) -> None:
         await self.send(text_data=json.dumps(
             {
             'type' : 'kill',
             'message' : 'Mamba Out',
-            'player' : self.player
+            'player' : event['player']
             }))
 
         await self.close()
 
 class PlayerOneConsumer(PlayerBase):
     player = 1
-    turn = 1
 
     async def _create_variables(self) -> None:
         self.height = int(self.scope['url_route']['kwargs']['height'])
@@ -157,7 +157,8 @@ class PlayerOneConsumer(PlayerBase):
                                   player_one = self.channel_name,
                                   player_two = None,
                                   height = self.height,
-                                  width = self.width)
+                                  width = self.width,
+                                  game_state = self.connect4.serialize())
                         
                 await sync_to_async(self.room.save)()
                 return room_id
@@ -180,7 +181,6 @@ class PlayerOneConsumer(PlayerBase):
 
 class PlayerTwoConsumer(PlayerBase):
     player = 2
-    turn = 0
 
     async def _create_variables(self) -> None:
         self.room_id = self.scope['url_route']['kwargs']['room_id']
@@ -230,11 +230,3 @@ class PlayerTwoConsumer(PlayerBase):
         await self.channel_layer.group_send(
             self.game_room, {'type' : 'warn.player'}
         )
-
-    async def warn_player(self, event) -> None:
-        await self.send(text_data=json.dumps(
-            {
-            # 'type' : 'start',
-            'message' : 'Ladies and gentlemen, start your engines\nbecause Stone Cold said so!',
-            'player' : self.player
-            }))

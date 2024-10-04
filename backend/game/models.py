@@ -9,4 +9,4 @@ class Rooms(models.Model):
     width = models.IntegerField()
     started = models.BooleanField(default=False)
     active = models.BooleanField(default=True)
-    game_status = models.JSONField(encoder=dumps, decoder=loads)
+    game_state = models.JSONField()

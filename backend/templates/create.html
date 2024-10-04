@@ -7,12 +7,14 @@
 </head>
 <body>
     <textarea id="chat-log" cols="100" rows="20"></textarea><br>
+    <input id="x" type="number" name="height" size = "100" value="0">
+    <input id="send" type="button" value="Send">
     <script>
         const socket = new WebSocket(
             'ws://'
             + window.location.host
             + '/ws/create/'
-            + '5/5'
+            + '8/6'
             + '/'
         )
 
@@ -21,7 +23,17 @@
             document.querySelector('#chat-log').value += (data.message + '\n');
         }
 
-
+        send.onclick = function (e) {
+            const coord_x = document.querySelector('#x');
+            const x = coord_x.value;
+            if(socket.readyState === socket.CLOSED){
+                return;
+            }
+            socket.send(JSON.stringify({
+                'x': x
+            }));
+            coord_x.value = '0';
+        }
 
     </script>
 </body>
