@@ -1,4 +1,3 @@
-import numpy
 import json
 import string
 import random
@@ -6,7 +5,6 @@ import random
 from .models import Rooms
 from .game import Connect4
 
-from django.db import IntegrityError
 from asgiref.sync import sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 
@@ -55,6 +53,10 @@ class PlayerBase(AsyncWebsocketConsumer):
 
         await self._get_game_state()
 
+        if not self.room.started:
+            await self._send_error_message('Waiting someone to join this room')
+            return
+
         play_return_code = self.connect4.make_play(x, self.player)
         print(self.connect4.board.board)
 
@@ -95,7 +97,6 @@ class PlayerBase(AsyncWebsocketConsumer):
                             'winning sequence' : self.connect4.winning_sequence,
                             }
         )
-
 
     async def broadcast_move(self, event) -> None:
         event_copy = {k : v for k, v in event.items()}
