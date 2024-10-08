@@ -1,6 +1,7 @@
 import json
 import string
 import random
+from typing import Coroutine
 
 from .models import Rooms
 from .game import Connect4
@@ -30,6 +31,21 @@ class PlayerBase(AsyncWebsocketConsumer):
     async def _create_variables(self) -> None:
         pass
 
+    async def _check_room_exist(self) -> None:
+        self.room = await sync_to_async(Rooms.objects.filter)(id = self.room_id)
+        self.room = await sync_to_async(self.room.first)()
+
+        if self.room is None:
+            self.message = 'Room do not exist'            
+            self.failed_to_connect = True
+        self.room_id = self.room_id
+
+    def _check_room_is_active(self) -> None:
+        if not self.room.active:
+            self.message = 'Room is inactive'
+            self.failed_to_connect = True
+            return
+
     async def _send_message_after_connection(self) -> None:
         pass
 
@@ -43,7 +59,7 @@ class PlayerBase(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps(
         {
         'type' : 'start',
-        'message' : 'Ladies and gentlemen, start your engines\nbecause Stone Cold said so!',
+        'message' : event['message'],
         'player' : self.player
         }))
 
@@ -62,7 +78,8 @@ class PlayerBase(AsyncWebsocketConsumer):
 
         message = self._get_message(play_return_code, x)
         if play_return_code < 0:
-            await self._send_error_message()
+            await self._send_error_message(message)
+            return
 
         await self._send_game_message(x, message)
 
@@ -107,8 +124,9 @@ class PlayerBase(AsyncWebsocketConsumer):
         if self.failed_to_connect:
             return
 
-        self.room.active = False
-        await sync_to_async(self.room.save)()
+        if self.player < 3:
+            self.room.active = False
+            await sync_to_async(self.room.save)()
 
         await self.channel_layer.group_send(
             self.game_room, {'type' : 'disconnect.message', 'player' : self.player}
@@ -124,7 +142,8 @@ class PlayerBase(AsyncWebsocketConsumer):
             'player' : event['player']
             }))
 
-        await self.close()
+        if event['player'] < 3:
+            await self.close()
 
 class PlayerOneConsumer(PlayerBase):
     player = 1
@@ -190,35 +209,24 @@ class PlayerTwoConsumer(PlayerBase):
         await self._check_room_exist()
         if self.failed_to_connect: return
                 
-        self._check_room_available()
+        self._check_room_is_active()
+        if self.failed_to_connect: return
+        
+        self._check_room_is_full()
         if self.failed_to_connect: return
 
         await self._get_game_data()
         await self._update_room_data()
 
-    async def _check_room_exist(self) -> None:
-        self.room = await sync_to_async(Rooms.objects.filter)(id = self.room_id)
-        self.room = await sync_to_async(self.room.first)()
+    async def _get_game_data(self) -> None:
+        self.height = self.room.height
+        self.width = self.room.width
 
-        if self.room is None:
-            self.message = 'Room do not exist'            
-            self.failed_to_connect = True
-        self.room_id = self.room_id
-
-    def _check_room_available(self) -> None:
-        if not self.room.active:
-            self.message = 'Room is inactive'
-            self.failed_to_connect = True
-            return
-
+    def _check_room_is_full(self) -> None:
         if self.room.started:
             self.message = 'Room is full'
             self.failed_to_connect = True
             return
-
-    async def _get_game_data(self) -> None:
-        self.height = self.room.height
-        self.width = self.room.width
 
     async def _update_room_data(self) -> None:
         self.room.active = True
@@ -229,5 +237,47 @@ class PlayerTwoConsumer(PlayerBase):
 
     async def _send_message_after_connection(self) -> None:
         await self.channel_layer.group_send(
-            self.game_room, {'type' : 'warn.player'}
+            self.game_room, {'type' : 'warn.player',
+                             'message' : 'Ladies and gentlemen, start your engines\nbecause Stone Cold said so!'}
         )
+
+class ViewerConsumer(PlayerBase):
+    player = 3
+
+    async def _create_variables(self) -> None:
+        self.room_id = self.scope['url_route']['kwargs']['room_id']
+        self.game_room = f'room_{self.room_id}'
+
+        await self._check_room_exist()
+        if self.failed_to_connect: return
+        
+        self._check_room_is_active()
+        if self.failed_to_connect: return
+
+    async def _send_message_after_connection(self) -> None:
+        await self.channel_layer.group_send(
+            self.game_room, {'type' : 'warn.player',
+                             'message' : 'I see dead people ... AND I SEE YOU!!!'}
+        )
+
+    async def receive(self, text_data) -> None:
+        data = json.loads(text_data)
+        x = int(data['x'])
+
+        await self._get_game_state()
+        
+        play_return_code = self.connect4.make_play(x, self.player)
+
+        message = self._get_message(play_return_code, x)
+        if play_return_code < 0:
+            await self._send_error_message(message)
+            return
+
+        await self._send_game_message(x, message)
+
+    def _get_message(self, return_code:int, x:int = None) -> str:
+        return {
+            -2 :  'Invalid move',
+            -1 :  'Wrong turn',
+             0 : f'Viewer suggested you to play : {x}'
+        }[return_code]

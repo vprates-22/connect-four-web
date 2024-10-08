@@ -248,7 +248,7 @@ class Connect4:
         :param player: an integer that represents the player
         :return: a boolean indicating if it's that player turns
         """
-        return self.turn % 2 == player % 2
+        return self.turn % 2 == player % 2 or player == 3
 
     def _verify_play_is_valid(self, x:int, y:int) -> bool:
         if x < 0 or x > self._width or y < 0:

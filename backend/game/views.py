@@ -6,3 +6,6 @@ def create_room(request):
 
 def join_room(request, room_id):
     return render(request, 'join.html', {'room_id':room_id})
+
+def watch_room(request, room_id):
+    return render(request, 'watch.html', {'room_id':room_id})
