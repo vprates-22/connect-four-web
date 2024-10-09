@@ -1,7 +1,6 @@
 import json
 import string
 import random
-from typing import Coroutine
 
 from .models import Rooms
 from .game import Connect4
