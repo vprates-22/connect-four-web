@@ -1,0 +1,29 @@
+.NavBar{
+    background-color: #6A9AB0;
+    font-size: 20px;
+    display: flex;
+
+    height: 50px;
+    padding: 10px 0;
+
+    border-bottom: 3px solid #001F3F;
+}
+
+.OptionNavBar{
+    text-decoration: none;
+    color: #001F3F;
+    
+    width: 75px;
+
+    text-align: center;
+    float: left;
+}
+
+.OptionNavBar:hover{
+    color: aliceblue;
+    text-decoration: underline overline;
+}
+
+a#LoginNavBar{
+    margin-left: auto;
+}
