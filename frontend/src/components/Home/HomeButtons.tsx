@@ -5,7 +5,7 @@ const HomeButtons = () => {
     <div className='HomeButtons'>
         <button className='OptionButton' id='Play'>Play</button>
         <div className='divider'></div>
-        <button className='OptionButton' id='Watch'>Watch a Room</button>
+        <button className='OptionButton' id='Watch'>Watch</button>
     </div>
     );
 }
