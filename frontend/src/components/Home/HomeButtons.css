@@ -1,28 +1,24 @@
 .HomeButtons{
     display: flex;
+    flex-direction: row;
+
     justify-content: center;
     align-items: center;
-    flex-direction: row;
-    height: 100px;
 }
 
 .OptionButton{
     background-color: #6A9AB0;
+    
     color: #001F3F;
+    font-size: 30px;
 
     height: 50px;
     width: 200px;
-    border-radius: 15px;
-
+    
     border: none;
+    border-radius: 15px;
 }
 
 .divider{
     width: 10px;
 }
-
-/* @media only screen and (max-width:1000px){
-    .HomeButtons{
-
-    }
-} */

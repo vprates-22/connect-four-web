@@ -1,0 +1,24 @@
+.PopUpBox{
+    background-color: #001F3F;
+    position: absolute;
+    
+    left: 50%;
+    top: 40%;
+    
+    height: 700px;
+    width: 500px;
+    
+    margin-left: -250px;
+    margin-top: -250px;
+
+    align-content: center;
+    text-align: center;
+
+    border-radius: 10px;
+}
+
+.BoardParams{
+    color: aliceblue;
+
+    font-size: 50px;
+}
