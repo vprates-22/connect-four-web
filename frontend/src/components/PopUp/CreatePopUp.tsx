@@ -1,13 +1,13 @@
-import PopUp from './PopUp.tsx';
+import PopUp, { PopUpOpenParams } from "./BasePopUp.tsx";
 
-import './CreatePopUp.css'
+import "./CreatePopUp.css"
 
 type CreateOptParams = {
-    idName:string,
-    minVal:number,
-    maxVal:number,
-    stepSize:number,
-    defaultVal:number
+    idName:string;
+    minVal:number;
+    maxVal:number;
+    stepSize:number;
+    defaultVal:number;
 }
 
 const CreateOptions = (params:CreateOptParams) => {
@@ -21,8 +21,8 @@ const CreateOptions = (params:CreateOptParams) => {
     const options = [...Array(arrayLength).keys()].map(i => i * stepSize + minVal);
     
     return(
-        <select className='SelectBox' id={idName} value={defaultVal}>
-            {options.map(size => <option value={size}>{size}</option>)}
+        <select className='SelectBox' id={idName} defaultValue={defaultVal}>
+            {options.map(size => <option key={size} value={size}>{size}</option>)}
         </select>
     );
 }
@@ -63,18 +63,15 @@ const TimeParams = () => {
     );
 }
 
-const CreatePopUp = (props:any) => {
+const CreatePopUp = (props:PopUpOpenParams) => {
     return (
-    <PopUp {...{}}>
-        <div className='PopUpHeader'>
-            <h1 className='Title'>Create Room</h1>
-            <button className='CloseButton'>&times;</button>
-        </div>
+    <PopUp title='Create Room' id='CreatePopUp'
+    open={props.open} onClose={props.onClose}>
         <div className='GameParams'>
             <BoardParams/>
             <TimeParams/>
         </div>
-        <button className='SubmitButton' type='submit'>Continue </button>
+        <button className='SubmitButton' type='submit'>Continue</button>
     </PopUp>
     );
 }

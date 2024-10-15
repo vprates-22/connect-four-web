@@ -3,5 +3,13 @@ body{
 }
 
 .HomeDiv{
-    margin-top: 50px;
+    position: relative;
+    top: 100px;
+}
+
+.HomeDivBlur{
+    position: relative;
+    top: 100px;
+    
+    filter: blur(3px);
 }

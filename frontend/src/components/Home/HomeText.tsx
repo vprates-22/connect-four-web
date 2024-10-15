@@ -1,4 +1,4 @@
-import './HomeText.css'
+import "./HomeText.css";
 
 const HomeText = () => {
     return (

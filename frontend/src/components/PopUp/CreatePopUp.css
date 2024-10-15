@@ -1,52 +1,12 @@
-.PopUpBox{
-
-    /* background-color: #6A9AB0; */
-    background-color: #001F3F;
-    position: absolute;
-    
+#CreatePopUp{
     left: 50%;
     top: 40%;
     
-    height: 700px;
-    width: 500px;
-    
     margin-left: -250px;
     margin-top: -250px;
-    
-    text-align: center;
-    
-    border-radius: 10px;
-}
 
-.PopUpHeader{
-    display: flex;
-    justify-content: space-between;
-
-    border-bottom: 3px solid aliceblue;
-}
-
-.Title{
-    padding: 10px;
-    color: aliceblue;
-    font-size: 60px;
-
-    text-align: left;
-
-    width: 100%;
-}
-
-.CloseButton{
-    font-size: 60px;
-    height: 0px;
-    width: 50px;
-    
-    position: relative;
-    top: 0;
-    
-    
-    color: aliceblue;
-    background-color: inherit;
-    border: none;
+    height: 700px;
+    width: 500px;
 }
 
 .GameParams{
@@ -122,4 +82,9 @@ label{
 
     height: 50px;
     width: 200px;
+}
+
+.SubmitButton:hover{
+    background-color: #3A6D8C;
+    font-size: 25.3px;
 }

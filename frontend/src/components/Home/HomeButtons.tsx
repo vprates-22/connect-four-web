@@ -1,21 +1,23 @@
-import { useNavigate } from 'react-router-dom';
-import CreatePopUp from '../PopUp/CreatePopUp';
+import "./HomeButtons.css";
 
-import './HomeButtons.css'
-import { useState } from 'react';
+type HomeButtonsParams = {
+    setCreatePopUpOpen:() => void;
+    setWatchPopUpOpen:() => void;
+}
 
-const HomeButtons = () => {
-    const navigate = useNavigate();
-
-    const [playPopUp, setPlayPopUp] = useState(false);
-
+const HomeButtons = (props:HomeButtonsParams) => {
     return (
     <>
-        <CreatePopUp/>
         <div className='HomeButtons'>
-            <button className='OptionButton' id='Play' onClick={() => navigate('/play')}>Play</button>
+            <button className='OptionButton' 
+            id='Play' onClick={props.setCreatePopUpOpen}>
+                Play
+            </button>
             <div className='divider'></div>
-            <button className='OptionButton' id='Watch' onClick={() => navigate('/watch')}>Watch</button>
+            <button className='OptionButton' 
+            id='Watch' onClick={props.setWatchPopUpOpen}>
+                Watch
+            </button>
         </div>
     </>
     );
