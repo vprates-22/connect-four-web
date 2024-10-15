@@ -8,10 +8,16 @@ import './HomePage.css'
 const HomePage = () => {
     return (
         <>
-        <div className="HomeDiv">
-            <NavBar/>
-            <HomeText/>
-            <HomeButtons/>
+        <main>
+            <div className="HomeDiv">
+                <NavBar/>
+                <HomeText/>
+                <HomeButtons/>
+            </div>
+        </main>
+
+        <div>
+            
         </div>
         </>
     );

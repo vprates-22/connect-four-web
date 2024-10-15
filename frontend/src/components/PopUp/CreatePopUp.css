@@ -1,4 +1,6 @@
 .PopUpBox{
+
+    /* background-color: #6A9AB0; */
     background-color: #001F3F;
     position: absolute;
     
@@ -10,60 +12,104 @@
     
     margin-left: -250px;
     margin-top: -250px;
-
+    
     text-align: center;
-
+    
     border-radius: 10px;
-
-    padding-top: 25px;
-    padding-bottom: 30px;
-    padding-left: 15px;
-    padding-right: 15px;   
 }
 
-.GameParams{
-    padding-top: 10px;
+.PopUpHeader{
+    display: flex;
+    justify-content: space-between;
+
+    border-bottom: 3px solid aliceblue;
 }
 
 .Title{
+    padding: 10px;
     color: aliceblue;
-    font-size: 55px;
+    font-size: 60px;
+
+    text-align: left;
+
+    width: 100%;
+}
+
+.CloseButton{
+    font-size: 60px;
+    height: 0px;
+    width: 50px;
+    
+    position: relative;
+    top: 0;
+    
+    
+    color: aliceblue;
+    background-color: inherit;
+    border: none;
+}
+
+.GameParams{
+    background-color: #6A9AB0;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+
+    padding-left: 15px;
+    padding-right: 15px;
+
+    height: 73%;
+
+    border-bottom: 3px solid aliceblue;
+}
+
+.SubTitle{
+    color: aliceblue;
+    font-size: 40px;
+    text-align: left;
 }
 
 .BoardParams{
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
 }
 
-.DimParams{
+label{
+    text-indent: 40px;
+}
+
+.Params{
     color: aliceblue;
 
     display: flex;
     flex-direction:row;
     justify-content: space-between;
     
-    font-size: 40px;
+    font-size: 30px;
 }
 
-.BoardSelect{
-    height: 50px;
-    width: 60px;
+.SelectBox{
+    border: none;
+    height: 40px;
+    width: 50px;
+    
+    color: aliceblue;
+    background-color: #001F3F;
+    
+    border-radius: 10px;
 
-    text-align: right;
-
-    font-size: 25px;
-}
-
-.SubmitDiv{
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-
-    justify-content: right;
+    text-align: center;
+    font-size: 23px;
 }
 
 .SubmitButton{
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    
+    justify-content: right;
+
     color: aliceblue;
     font-size: 25px;
 
