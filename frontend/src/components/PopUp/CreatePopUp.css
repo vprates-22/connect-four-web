@@ -30,7 +30,7 @@
     text-align: left;
 }
 
-.BoardParams{
+.GetBoardParams{
     display: flex;
     flex-direction: column;
 }

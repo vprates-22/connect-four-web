@@ -1,0 +1,29 @@
+.GameBoard{
+    color: white;
+    background-color: #001F3F;
+
+    position: absolute;
+    height: 80%;
+    width: 80%;
+
+    top: 10%;
+    left: 10%;
+
+    padding-left: 50px;
+    padding-right: 50px;
+}
+
+.BoardColumns{
+    position: relative;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.BoardRow{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}

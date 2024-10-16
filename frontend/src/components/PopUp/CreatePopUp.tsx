@@ -27,9 +27,9 @@ const CreateOptions = (params:CreateOptParams) => {
     );
 }
 
-const BoardParams = () => {
+const GetBoardParams = () => {
     return (
-    <div className='BoardParams'>
+    <div className='GetBoardParams'>
         <h3 className='SubTitle'>Board Shape</h3>
         <div className='Params'>
             <label>Height......................................</label> 
@@ -63,12 +63,12 @@ const TimeParams = () => {
     );
 }
 
-const CreatePopUp = (props:PopUpOpenParams) => {
+const CreatePopUp = (props:PopUpOpenParams) => {    
     return (
     <PopUp title='Create Room' id='CreatePopUp'
     open={props.open} onClose={props.onClose}>
         <div className='GameParams'>
-            <BoardParams/>
+            <GetBoardParams/>
             <TimeParams/>
         </div>
         <button className='SubmitButton' type='submit'>Continue</button>
