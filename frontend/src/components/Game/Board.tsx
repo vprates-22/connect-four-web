@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import './Board.css'
 
 type BoardParams = {
@@ -5,32 +6,61 @@ type BoardParams = {
     width:number;
 }
 
-const BuildRow = ({width}: {width:number}) => {
-    const row = [...Array(width)].map(_ => 0);
-    
+type ColBuilderParams = {
+    board:Array<Array<number>>;
+    handleClick:(row:number, col:number, val:number) => void;
+}
+
+type RowBuilderParams = {
+    rowIndex:number;
+    row:Array<number>;
+    handleClick:(row:number, col:number, val:number) => void;
+}
+
+const BuildRow = (props:RowBuilderParams) => {
     return(
         <div className='BoardRow'>
-            {row.map(_ => <div className='BoardTile'>0</div>)}
+            {props.row.map((tile, colIndex) => <div className='BoardTile' key={tile}
+             onClick={props.handleClick(props.rowIndex, colIndex, 2)}
+             style={tile == 1 ? 'background-color:red' : tile == 2 ? 'background-color:yellow' : 'background-color:white'}>
+
+             </div>)}
         </div>
     );
 }
 
-const BuildBoard = (props:BoardParams) => {
-    const columns = [...Array(props.height)].map(_ => 0);
-
+const BuildBoard = (props:ColBuilderParams) => {
     return(
         <div className='BoardColumns'>
-            {columns.map(_ => <BuildRow width={props.width}/>)}
+            {props.board.map(_ => <BuildRow />)}
         </div>
     );
 }
 
 const Board = (props:BoardParams) => {
-    // const top;
+    const [board, setBoard] = useState<Array<Array<number>>>
+        (Array(props.height).fill(Array(props.width).fill(0)));
     
+    // const socket = WebSocket(
+
+    // );
+
+    const handleClick = (row:number, col:number, val:number) => {
+        const newBoard:Array<Array<number>>
+         = board.map((r, rowIndex) => 
+            r.map((tile, colIndex) => {
+                if(rowIndex == row && colIndex == col){
+                    return val;
+                }
+                return tile
+            })
+        );
+        setBoard(newBoard);
+    }
+
     return(
         <div className='GameBoard'>
-            <BuildBoard height={props.height} width={props.width}/>
+            <BuildBoard board={board} handleClick={handleClick}/>
         </div>
     );
 }
