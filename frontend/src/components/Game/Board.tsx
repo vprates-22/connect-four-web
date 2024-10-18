@@ -4,27 +4,33 @@ import './Board.css'
 type BoardParams = {
     height:number;
     width:number;
+    mode:string;
 }
 
 type ColBuilderParams = {
     board:Array<Array<number>>;
-    handleClick:(row:number, col:number, val:number) => void;
 }
 
 type RowBuilderParams = {
     rowIndex:number;
     row:Array<number>;
-    handleClick:(row:number, col:number, val:number) => void;
+}
+
+type Message = {
+    type:string;
+    message:string;
+    player:number,
+    x:number,
+    turn:number,
+    game_won:boolean,
+    game_winner:number,
+    winning_sequence:Array<number>,
 }
 
 const BuildRow = (props:RowBuilderParams) => {
     return(
         <div className='BoardRow'>
-            {props.row.map((tile, colIndex) => <div className='BoardTile' key={tile}
-             onClick={props.handleClick(props.rowIndex, colIndex, 2)}
-             style={tile == 1 ? 'background-color:red' : tile == 2 ? 'background-color:yellow' : 'background-color:white'}>
 
-             </div>)}
         </div>
     );
 }
@@ -32,7 +38,7 @@ const BuildRow = (props:RowBuilderParams) => {
 const BuildBoard = (props:ColBuilderParams) => {
     return(
         <div className='BoardColumns'>
-            {props.board.map(_ => <BuildRow />)}
+            
         </div>
     );
 }
@@ -41,26 +47,38 @@ const Board = (props:BoardParams) => {
     const [board, setBoard] = useState<Array<Array<number>>>
         (Array(props.height).fill(Array(props.width).fill(0)));
     
-    // const socket = WebSocket(
+    const [lowestTiles, setLowestTiles] = useState<Array<number>>
+        (Array(props.width).fill(props.height-1));
 
-    // );
+    const updateBoard = () => {
 
-    const handleClick = (row:number, col:number, val:number) => {
-        const newBoard:Array<Array<number>>
-         = board.map((r, rowIndex) => 
-            r.map((tile, colIndex) => {
-                if(rowIndex == row && colIndex == col){
-                    return val;
-                }
-                return tile
-            })
-        );
-        setBoard(newBoard);
+    }
+
+    const socket = new WebSocket(
+        'ws://localhost:8000/ws/'
+        + props.mode
+        + '/'
+        + props.height
+        + '/'
+        + props.width
+        + '/'
+    );
+
+    socket.onmessage = (e) => {
+        const data:Message = JSON.parse(e.data);
+        switch(data.type){
+            case 'kill':
+                socket.close();
+                break;
+            case 'play':
+                console
+                break;
+        }
     }
 
     return(
         <div className='GameBoard'>
-            <BuildBoard board={board} handleClick={handleClick}/>
+            
         </div>
     );
 }

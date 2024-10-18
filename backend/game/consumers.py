@@ -51,7 +51,13 @@ class PlayerBase(AsyncWebsocketConsumer):
     async def _send_error_message(self, msg) -> None:
         await self.send(text_data=json.dumps({
             'type' : 'error',
-            'message' : msg
+            'message' : msg,
+            'player' : None,
+            'x' : None,
+            'turn' : None,
+            'game_won' : None,
+            'game_winner' : None,
+            'winning_sequence' : None,            
         }))
 
     async def warn_player(self, event) -> None:
@@ -59,7 +65,12 @@ class PlayerBase(AsyncWebsocketConsumer):
         {
         'type' : 'start',
         'message' : event['message'],
-        'player' : self.player
+        'player' : self.player,
+        'x' : None,
+        'turn' : None,
+        'game_won' : None,
+        'game_winner' : None,
+        'winning_sequence' : None,
         }))
 
     async def receive(self, text_data) -> None:
@@ -104,19 +115,19 @@ class PlayerBase(AsyncWebsocketConsumer):
     async def _send_game_message(self, x:int, message:str) -> None:
         await self.channel_layer.group_send(
             self.game_room, {'type' : 'broadcast.move', 
+                            'message' : message,
                             'player' : self.player,
                             'x' : x,
-                            'message' : message,
                             'turn' : self.connect4.turn,
                             'game_won' : self.connect4.game_won,
                             'game_winner' : self.connect4.game_won,
-                            'winning sequence' : self.connect4.winning_sequence,
+                            'winning_sequence' : self.connect4.winning_sequence,
                             }
         )
 
     async def broadcast_move(self, event) -> None:
         event_copy = {k : v for k, v in event.items()}
-        event_copy['type'] = 'move'
+        event_copy['type'] = 'play'
         await self.send(text_data=json.dumps(event_copy))
 
     async def disconnect(self, close_code) -> None:
@@ -138,7 +149,12 @@ class PlayerBase(AsyncWebsocketConsumer):
             {
             'type' : 'kill',
             'message' : 'Mamba Out',
-            'player' : event['player']
+            'player' : event['player'],
+            'x' : None,
+            'turn' : None,
+            'game_won' : None,
+            'game_winner' : None,
+            'winning_sequence' : None,
             }))
 
         if event['player'] < 3:
@@ -159,7 +175,13 @@ class PlayerOneConsumer(PlayerBase):
         await self.send(text_data=json.dumps(
             {
             'type' : 'room-id',
-            'message': self.room_id
+            'message': self.room_id,
+            'player' : None,
+            'x' : None,
+            'turn' : None,
+            'game_won' : None,
+            'game_winner' : None,
+            'winning_sequence' : None,
             }))
 
     async def _create_room(self) -> str|int:
