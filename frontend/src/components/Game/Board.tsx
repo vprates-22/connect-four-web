@@ -50,11 +50,29 @@ const Board = (props:BoardParams) => {
     const [lowestTiles, setLowestTiles] = useState<Array<number>>
         (Array(props.width).fill(props.height-1));
 
-    const updateBoard = () => {
+    const updateBoard = (row:number, col:number, val:number) => {
+        const newBoard = board.map((r, rowIndex) => 
+            r.map((tile, colIndex) => {
+                if(row === rowIndex && col === colIndex)
+                    return val;
+                return tile;
+            })
+        );
 
+        setBoard(newBoard);
+    }
+    
+    const updateLowestTiles = (col:number) => {
+        const newLowestTiles = lowestTiles.map((c, colIndex) => {
+            if(colIndex === col && c >= 0)
+                return c - 1;
+            return c;
+        });
+        
+        setLowestTiles(newLowestTiles);
     }
 
-    const socket = new WebSocket(
+    const socket:WebSocket = new WebSocket(
         'ws://localhost:8000/ws/'
         + props.mode
         + '/'
@@ -71,7 +89,11 @@ const Board = (props:BoardParams) => {
                 socket.close();
                 break;
             case 'play':
-                console
+                let player = data.player;
+                let x = data.x;
+                let y = lowestTiles[x];
+                updateBoard(y, x, player);
+                updateLowestTiles(x);
                 break;
         }
     }
