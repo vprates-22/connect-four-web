@@ -52,12 +52,14 @@ class PlayerBase(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({
             'type' : 'error',
             'message' : msg,
+            'height' : self.room.height,
+            'width' : self.room.width,
             'player' : None,
             'x' : None,
             'turn' : None,
             'game_won' : None,
             'game_winner' : None,
-            'winning_sequence' : None,            
+            'winning_sequence' : None,
         }))
 
     async def warn_player(self, event) -> None:
@@ -65,7 +67,9 @@ class PlayerBase(AsyncWebsocketConsumer):
         {
         'type' : 'start',
         'message' : event['message'],
-        'player' : self.player,
+        'height' : event['height'],
+        'width' : event['width'],
+        'player' : event['player'],
         'x' : None,
         'turn' : None,
         'game_won' : None,
@@ -116,6 +120,8 @@ class PlayerBase(AsyncWebsocketConsumer):
         await self.channel_layer.group_send(
             self.game_room, {'type' : 'broadcast.move', 
                             'message' : message,
+                            'height' : self.room.height,
+                            'width' : self.room.width,
                             'player' : self.player,
                             'x' : x,
                             'turn' : self.connect4.turn,
@@ -149,6 +155,8 @@ class PlayerBase(AsyncWebsocketConsumer):
             {
             'type' : 'kill',
             'message' : 'Mamba Out',
+            'height' : event['height'],
+            'width' : event['width'],
             'player' : event['player'],
             'x' : None,
             'turn' : None,
@@ -176,6 +184,8 @@ class PlayerOneConsumer(PlayerBase):
             {
             'type' : 'room-id',
             'message': self.room_id,
+            'height' : self.room.height,
+            'width' : self.room.width,
             'player' : None,
             'x' : None,
             'turn' : None,
@@ -259,8 +269,11 @@ class PlayerTwoConsumer(PlayerBase):
     async def _send_message_after_connection(self) -> None:
         await self.channel_layer.group_send(
             self.game_room, {'type' : 'warn.player',
-                             'message' : 'Ladies and gentlemen, start your engines\nbecause Stone Cold said so!'}
-        )
+                             'message' : 'Ladies and gentlemen, start your engines\nbecause Stone Cold said so!',
+                             'height' : self.room.height,
+                             'width' : self.room.width,
+                             'player' : self.player
+                             })
 
 class ViewerConsumer(PlayerBase):
     player = 3
@@ -278,7 +291,10 @@ class ViewerConsumer(PlayerBase):
     async def _send_message_after_connection(self) -> None:
         await self.channel_layer.group_send(
             self.game_room, {'type' : 'warn.player',
-                             'message' : 'I see dead people ... AND I SEE YOU!!!'}
+                             'message' : 'I see dead people ... AND I SEE YOU!!!',
+                             'height' : self.room.height,
+                             'width' : self.room.width,
+                             'player' : self.player}
         )
 
     async def receive(self, text_data) -> None:

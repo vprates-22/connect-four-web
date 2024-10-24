@@ -1,13 +1,13 @@
 import CreatePopUp from "./components/PopUp/CreatePopUp";
 import HomePage from "./pages/Home/HomePage";
-import Board from "./components/Game/Board";
+import CreateLobby from "./components/Lobby/CreateLobby";
 import { Routes, Route } from "react-router-dom";
 
 function App() {
   return (
     <Routes>
       {/* <Route path='/' element={<HomePage/>}></Route> */}
-      <Route path='/' element={<Board mode='create' height={6} width={7}/>}></Route>
+      <Route path='/' element={<CreateLobby height={6} width={7}/>}></Route>
     </Routes>
   )
 }
