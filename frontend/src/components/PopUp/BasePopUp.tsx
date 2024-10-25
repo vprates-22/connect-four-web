@@ -5,23 +5,15 @@ export type PopUpOpenParams = {
     onClose:() => void;
 }
 
-type PopUpDataParams = {
+type PopUpParams = {
     id:string;
-    title:string;
+    open:boolean;
     children:React.ReactNode;
 };
-
-type PopUpParams = PopUpDataParams & PopUpOpenParams
 
 const PopUp = (props:PopUpParams) => {
     return props.open ? (
         <div className='PopUpBox' id={props.id}>
-            <div className='PopUpHeader'>
-                <h1 className='Title'>{props.title}</h1>
-                <button className='CloseButton' onClick={props.onClose}>
-                    &times;
-                </button>
-            </div>
             { props.children }
         </div>
     ) : "";

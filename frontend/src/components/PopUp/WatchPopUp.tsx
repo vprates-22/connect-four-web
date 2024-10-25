@@ -1,11 +1,13 @@
 import PopUp, { PopUpOpenParams } from "./BasePopUp";
+import BasePopUpHeader from "./BasePopUpHeader";
+
 import "./WatchPopUp.css"
 
 const WatchPopUp = (props:PopUpOpenParams) => {
     return (
         <>
-        <PopUp title='Watch Room' id='WatchPopUp'
-        open={props.open} onClose={props.onClose}>
+        <PopUp id='WatchPopUp' open={props.open}>
+            <BasePopUpHeader title='Watch Room' closeButton={true} onClose={props.onClose}/>
             <div className='WatchParams'>
                 <input type='text' className='GameRoom' 
                 name='GameRoom' id='GameRoom'

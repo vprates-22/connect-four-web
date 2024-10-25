@@ -1,4 +1,5 @@
 import PopUp, { PopUpOpenParams } from "./BasePopUp.tsx";
+import BasePopUpHeader from "./BasePopUpHeader.tsx";
 
 import "./CreatePopUp.css"
 
@@ -65,8 +66,8 @@ const TimeParams = () => {
 
 const CreatePopUp = (props:PopUpOpenParams) => {    
     return (
-    <PopUp title='Create Room' id='CreatePopUp'
-    open={props.open} onClose={props.onClose}>
+    <PopUp id='CreatePopUp' open={props.open}>
+        <BasePopUpHeader title='Create Room' closeButton={true} onClose={props.onClose}/>
         <div className='GameParams'>
             <GetBoardParams/>
             <TimeParams/>

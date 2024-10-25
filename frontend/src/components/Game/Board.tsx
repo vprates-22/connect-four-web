@@ -1,25 +1,7 @@
 import { useState } from 'react';
 import './Board.css'
 
-export type BoardParams = {
-    height:number;
-    width:number;
-}
-
-export type Message = {
-    type:string;
-    message:string;
-    height:number;
-    width:number;
-    player:number;
-    x:number;
-    turn:number;
-    game_won:boolean;
-    game_winner:number;
-    winning_sequence:Array<number>;
-}
-
-const BuildRow = (props:RowBuilderParams) => {
+const BuildRow = (props) => {
     return(
         <div className='BoardRow'>
 
@@ -27,7 +9,7 @@ const BuildRow = (props:RowBuilderParams) => {
     );
 }
 
-const BuildBoard = (props:ColBuilderParams) => {
+const BuildBoard = (props) => {
     return(
         <div className='BoardColumns'>
             
@@ -35,7 +17,7 @@ const BuildBoard = (props:ColBuilderParams) => {
     );
 }
 
-const Board = (props:BoardParams) => {
+const Board = (props) => {
     const [board, setBoard] = useState<Array<Array<number>>>
         (Array(props.height).fill(Array(props.width).fill(0)));
     

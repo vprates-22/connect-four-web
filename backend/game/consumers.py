@@ -79,6 +79,8 @@ class PlayerBase(AsyncWebsocketConsumer):
 
     async def receive(self, text_data) -> None:
         data = json.loads(text_data)
+        print(data)
+
         x = int(data['x'])
 
         await self._get_game_state()
