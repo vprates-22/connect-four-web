@@ -1,6 +1,6 @@
 import "./HomeButtons.css";
 
-type HomeButtonsParams = {
+interface HomeButtonsParams {
     setCreatePopUpOpen:() => void;
     setWatchPopUpOpen:() => void;
 }

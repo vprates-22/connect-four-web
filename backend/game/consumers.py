@@ -157,8 +157,8 @@ class PlayerBase(AsyncWebsocketConsumer):
             {
             'type' : 'kill',
             'message' : 'Mamba Out',
-            'height' : event['height'],
-            'width' : event['width'],
+            'height' : None,
+            'width' : None,
             'player' : event['player'],
             'x' : None,
             'turn' : None,
@@ -289,6 +289,8 @@ class ViewerConsumer(PlayerBase):
         
         self._check_room_is_active()
         if self.failed_to_connect: return
+
+
 
     async def _send_message_after_connection(self) -> None:
         await self.channel_layer.group_send(

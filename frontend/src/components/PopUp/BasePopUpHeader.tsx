@@ -1,6 +1,6 @@
 import "./BasePopUpHeader.css";
 
-type PopUpHeaderParam = {
+interface PopUpHeaderParam {
     closeButton:boolean;
     title:string;
     onClose:() => void;

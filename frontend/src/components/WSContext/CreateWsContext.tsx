@@ -1,11 +1,11 @@
 import { createContext, useEffect, useRef, useState } from "react";
 
-type WebSocketContextParams = {
+interface WebSocketContextParams {
     children:React.ReactNode;
     WS_URL:string;
 }
 
-export type Context = {
+export interface Context {
     socket:WebSocket|null;
     board:Array<Array<number>>;
     gameState:number;
@@ -13,7 +13,7 @@ export type Context = {
     roomId:string;
 }
 
-export type Message = {
+export interface Message {
     type:string;
     message:string;
     height:number;
@@ -45,6 +45,7 @@ const WebsocketProvider = ( props:WebSocketContextParams ) => {
                     switch(data.type){
                         case "room-id":
                             setRoomId(data.message);
+                            // setGameState(1)
                             break;
                         case "start":
                             setGameState(1);
@@ -79,9 +80,10 @@ const WebsocketProvider = ( props:WebSocketContextParams ) => {
                             
                             break;
                         case "kill":
-                            setGameState(-1);
-                            
-                            ws.current?.close();
+                            if(data.player < 3){
+                                setGameState(-1);
+                                ws.current?.close();
+                            }
                             break;
                         default:
                             break;

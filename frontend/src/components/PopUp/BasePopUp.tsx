@@ -1,11 +1,11 @@
 import "./BasePopUp.css";
 
-export type PopUpOpenParams = {
+export interface PopUpOpenParams{
     open:boolean;
     onClose:() => void;
 }
 
-type PopUpParams = {
+interface PopUpParams{
     id:string;
     open:boolean;
     children:React.ReactNode;
