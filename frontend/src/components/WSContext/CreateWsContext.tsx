@@ -38,6 +38,9 @@ const WebsocketProvider = ( props:WebSocketContextParams ) => {
     useEffect(() => {
             ws.current = new WebSocket(props.WS_URL);
 
+            let newBoard:Array<Array<number>> = [];
+            let newLowestTiles:Array<number> = [];
+
             ws.current.onopen = () => {console.log("CONNECT")};
             ws.current.onclose = () => {console.log("DISCONNECT")};
             ws.current.onmessage = (e) => {
@@ -45,24 +48,26 @@ const WebsocketProvider = ( props:WebSocketContextParams ) => {
                     switch(data.type){
                         case "room-id":
                             setRoomId(data.message);
-                            // setGameState(1)
                             break;
                         case "start":
                             setGameState(1);
-                            
-                            setLowestTiles(Array(data.width).fill(data.height-1));
 
-                            setBoard(Array(data.height).fill(
-                                Array(data.width).fill(0)
-                            ));
+                            newLowestTiles = new Array(data.width).fill(data.height-1)
+                            setLowestTiles(newLowestTiles);
+    
+                            newBoard = new Array(data.height).fill(Array(data.width).fill(0));
+                            setBoard(newBoard);
                             break;
                         case "error":
                             break;
                         case "play":
                             const x = data.x;
-                            const y = lowestTiles[x];
+                            const y = newLowestTiles[x];
                             
-                            const newBoard = board.map((r, rowIndex) => 
+                            console.log(x)
+                            console.log(y)
+
+                            newBoard = newBoard.map((r, rowIndex) => 
                                 r.map((tile, colIndex) => {
                                     if(rowIndex == y && colIndex == x)
                                         return data.player;
@@ -71,13 +76,14 @@ const WebsocketProvider = ( props:WebSocketContextParams ) => {
                             )
                             setBoard(newBoard);
 
-                            const newLowestTiles = lowestTiles.map((lowest, colIndex) => {
+                            newLowestTiles = newLowestTiles.map((lowest, colIndex) => {
                                 if(colIndex === x)
-                                    return lowest--;
+                                    return lowest - 1;
                                 return lowest;
                             });
                             setLowestTiles(newLowestTiles);
                             
+                            console.log(newBoard)
                             break;
                         case "kill":
                             if(data.player < 3){

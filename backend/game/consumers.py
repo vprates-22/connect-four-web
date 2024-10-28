@@ -79,14 +79,16 @@ class PlayerBase(AsyncWebsocketConsumer):
 
     async def receive(self, text_data) -> None:
         data = json.loads(text_data)
-        print(data)
-
         x = int(data['x'])
-
+        
         await self._get_game_state()
 
         if not self.room.started:
             await self._send_error_message('Waiting someone to join this room')
+            return
+
+        if self.room.game_over:
+            await self._send_error_message('Game already over')
             return
 
         play_return_code = self.connect4.make_play(x, self.player)
@@ -97,9 +99,13 @@ class PlayerBase(AsyncWebsocketConsumer):
             await self._send_error_message(message)
             return
 
+
         await self._send_game_message(x, message)
 
-        await self._save_game_state()    
+        if play_return_code > 0:
+            self.room.game_over = True
+
+        await self._save_game_state()
 
     def _get_message(self, return_code:int, x:int = None) -> str:
         return {

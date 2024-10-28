@@ -21,7 +21,7 @@ const WatchPopUp = (props:PopUpOpenParams) => {
     }
 
     const handleClick = () => {
-        if(roomId.length < 20){
+        if(roomId.length != 20){
             return;
         }
         const ws_url = `ws://127.0.0.1:8000/ws/watch/${roomId}/`

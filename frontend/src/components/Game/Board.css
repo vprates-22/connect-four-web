@@ -30,8 +30,6 @@
 }
 
 .BoardTile{
-    background-color: white;
-    
     width: 100%;
 
     border-radius: 50%;
@@ -39,4 +37,16 @@
     text-align: center;
     justify-content: center;
 
+}
+
+#Empty{
+    background-color: white;
+}
+
+#Red{
+    background-color: red;
+}
+
+#Yellow{
+    background-color: yellow;
 }
