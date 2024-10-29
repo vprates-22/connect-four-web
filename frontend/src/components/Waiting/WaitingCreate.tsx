@@ -15,7 +15,7 @@ const RoomInformer = () => {
     const path = `${host}/join/${context.roomId}/`;
 
     const copyRoomId = () => {
-        navigator.clipboard.writeText(path.replace('5173', '8000'));
+        navigator.clipboard.writeText(path);
     }
         
 
@@ -26,7 +26,7 @@ const RoomInformer = () => {
             <div className="RoomIdDiv">
                 <div className="RoomIdLine">
                     <div id='RoomId'>
-                        {path.replace('5173', '8000')}
+                        {path}
                     </div>
                     <div className="CopyImg">
                         <img id='copyIcon' src='/Copy.png' onClick={() => {copyRoomId()}}></img>
