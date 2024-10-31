@@ -12,7 +12,7 @@ const RoomIdPopUp = () => {
     const context = useContext(WSContext);
 
     const host = window.location.host;
-    const path = `${host}/play/${context.roomId}/`;
+    const path = `${host}/join/${context.roomId}/`;
 
     const copyRoomId = () => {
         navigator.clipboard.writeText(path);

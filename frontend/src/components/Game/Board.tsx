@@ -15,7 +15,6 @@ interface BuildRowParams {
 }
 
 const BuildRow = (props:BuildRowParams) => {
-
     return(
         <div className='BoardRow'>
             {

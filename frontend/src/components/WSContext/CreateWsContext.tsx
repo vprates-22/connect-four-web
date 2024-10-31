@@ -3,6 +3,7 @@ import { createContext, useEffect, useRef, useState } from "react";
 interface WebSocketContextParams {
     children:React.ReactNode;
     WS_URL:string;
+    // onMessage: () => void;
 }
 
 export interface Context {

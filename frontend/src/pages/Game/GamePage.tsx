@@ -1,10 +1,10 @@
 import WebsocketProvider from "../../components/WSContext/CreateWsContext";
-import LoungeCreate from "../../components/Lounges/LoungeCreate"
+import CreateLounge from "../../components/Lounges/CreateLounge"
 
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 
-const PlayingPage = () => {
+const GamePage = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -25,9 +25,9 @@ const PlayingPage = () => {
     
     return (
         <WebsocketProvider WS_URL={url}>
-            <LoungeCreate/>
+            <CreateLounge/>
         </WebsocketProvider>
     );
 }
 
-export default PlayingPage;
+export default GamePage;

@@ -17,7 +17,7 @@ class PlayerBase(AsyncWebsocketConsumer):
 
         if self.failed_to_connect:
             await self.accept()
-            await self._send_error_message(self.message)
+            await self._send_fatal_error_message(self.message)
             await self.close()
             return
 
@@ -47,6 +47,21 @@ class PlayerBase(AsyncWebsocketConsumer):
 
     async def _send_message_after_connection(self) -> None:
         pass
+
+    async def _send_fatal_error_message(self, msg) -> None:
+        await self.send(text_data=json.dumps({
+            'type' : 'kill',
+            'message' : msg,
+            'height' : self.room.height,
+            'width' : self.room.width,
+            'player' : None,
+            'x' : None,
+            'turn' : None,
+            'game_won' : None,
+            'game_winner' : None,
+            'winning_sequence' : None,
+        }))
+
 
     async def _send_error_message(self, msg) -> None:
         await self.send(text_data=json.dumps({
@@ -92,7 +107,6 @@ class PlayerBase(AsyncWebsocketConsumer):
             return
 
         play_return_code = self.connect4.make_play(x, self.player)
-        print(self.connect4.board.board)
 
         message = self._get_message(play_return_code, x)
         if play_return_code < 0:
@@ -295,8 +309,6 @@ class ViewerConsumer(PlayerBase):
         
         self._check_room_is_active()
         if self.failed_to_connect: return
-
-
 
     async def _send_message_after_connection(self) -> None:
         await self.channel_layer.group_send(
