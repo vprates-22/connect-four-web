@@ -1,5 +1,5 @@
 import WebsocketProvider from "../../components/WSContext/CreateWsContext";
-import RoomInformer from "../../components/Waiting/WaitingCreate"
+import LoungeCreate from "../../components/Lounges/LoungeCreate"
 
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
@@ -25,7 +25,7 @@ const PlayingPage = () => {
     
     return (
         <WebsocketProvider WS_URL={url}>
-            <RoomInformer/>
+            <LoungeCreate/>
         </WebsocketProvider>
     );
 }

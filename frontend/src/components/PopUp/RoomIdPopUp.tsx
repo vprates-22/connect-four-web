@@ -1,26 +1,24 @@
-import { useContext } from "react";
-import { WSContext } from "../../components/WSContext/CreateWsContext";
-import BasePopUp from "../PopUp/BasePopUp";
-import BasePopUpHeader from "../PopUp/BasePopUpHeader";
+import { WSContext } from "../WSContext/CreateWsContext";
+import BasePopUpHeader from "./BasePopUpHeader";
+import BasePopUp from "./BasePopUp";
 
-import "./WaitingCreate.css";
 import { useNavigate } from "react-router-dom";
-import Board from "../Game/Board";
+import { useContext } from "react";
 
-const RoomInformer = () => {
+import './RoomIdPopUp.css'
+
+const RoomIdPopUp = () => {
     const navigate = useNavigate();
     const context = useContext(WSContext);
 
     const host = window.location.host;
-    const path = `${host}/join/${context.roomId}/`;
+    const path = `${host}/play/${context.roomId}/`;
 
     const copyRoomId = () => {
         navigator.clipboard.writeText(path);
     }
-        
 
-    return (
-        context.gameState === 0 ?
+    return(
         <BasePopUp open={true} id="RoomIdPopUp">
             <BasePopUpHeader closeButton={false} title="Your Room Id" onClose={()=>{}}/>
             <div className="RoomIdDiv">
@@ -35,9 +33,8 @@ const RoomInformer = () => {
             </div>
             <button className='GoHomeButton' type='submit' 
             onClick={() => {navigate('/')}}>Exit Room</button>
-        </BasePopUp> :
-        <Board/>
-    )
+        </BasePopUp>         
+    );
 }
 
-export default RoomInformer;
+export default RoomIdPopUp;
