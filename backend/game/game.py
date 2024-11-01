@@ -7,6 +7,9 @@ class Board:
 
         :param height: game board height
         :param width: game board width
+        :param state:
+
+        :return: an instance of a Connect-Four Bourd
         """
         if state is None:
             self.board = np.zeros((height, width), dtype=int)
@@ -15,6 +18,7 @@ class Board:
             self.width = width
 
             self._winning_sequence = []
+            self._lowest_rows = [height - 1 for _ in range(width)]
         else:
             for key, value in state.items():
                 setattr(self, key, value)
@@ -26,12 +30,13 @@ class Board:
 
     def _check_diagonal(self, x:int, y:int) -> bool:
         """
-        Function intended to check if there are four pieces
+        Function intended to check whether there are four pieces
             from the same player aligned diagonally \\
         
         :param x: x of the altered position
         :param y: y of the altered position
-        :return: if there is four pieces aligned
+        
+        :return: whether there is four pieces aligned
         """
         for i in range(-3, 1):
             if not (x + i >= 0 and x + i + 3 < self.width
@@ -50,12 +55,13 @@ class Board:
     
     def _check_anti_diagonal(self, x:int, y:int) -> bool:
         """
-        Function intended to check if there are four pieces
+        Function intended to check whether there are four pieces
             from the same player aligned diagonally /
         
         :param x: x of the altered position
         :param y: y of the altered position
-        :return: if there is four pieces aligned
+        
+        :return: whether there is four pieces aligned
         """
         for i in range(0, 4):
             if not (y - i >= 0 and y - i + 3 < self.heigth
@@ -74,12 +80,13 @@ class Board:
     
     def _check_vertical(self, x:int, y:int) -> bool:
         """
-        Function intended to check if there are four pieces
+        Function intended to check whether there are four pieces
             from the same player aligned vertically
         
         :param x: x of the altered position
         :param y: y of the altered position
-        :return: if there is four pieces aligned
+        
+        :return: whether there is four pieces aligned
         """
         vertical = self.board[y:y+4, x]
         if vertical.shape[0] < 4:
@@ -92,12 +99,13 @@ class Board:
                
     def _check_horizontal(self, x:int, y:int) -> bool:
         """
-        Function intended to check if there are four pieces
+        Function intended to check whether there are four pieces
             from the same player aligned horizontally
         
         :param x: x of the altered position
         :param y: y of the altered position
-        :return: if there is four pieces aligned
+        
+        :return: whether there is four pieces aligned
         """
         horizontal = self.board[y, x-3:x+4]
         horizontal = horizontal == self.board[y, x]
@@ -111,17 +119,28 @@ class Board:
 
     def _check_win(self, x:int, y:int) -> bool:
         """
-        Function intended to check if there are four pieces
+        Function intended to check whether there are four pieces
             from the same player aligned in any direction
         
         :param x: x of the altered position
         :param y: y of the altered position
-        :return: if there is four pieces aligned
+        
+        :return: whether there is four pieces aligned
         """
         for check in [self._check_vertical, self._check_horizontal, self._check_anti_diagonal, self._check_diagonal]:
             if check(x, y):
                 return True
         return False
+
+    def _get_y(self, x:int) -> int:
+        """
+        Function intended to get the lowest spot that we can place a tile
+
+        :param x: the x we want to place a tile
+
+        :return: the lowest tile allowed to 
+        """
+        return self._lowest_rows[x]
 
     def add_piece(self, player:int, x:int, y:int) -> bool:
         """
@@ -130,18 +149,35 @@ class Board:
         :param player: integer representing the player who made the play
         :param x: x of the altered position
         :param y: y of the altered position
-        :return: if there is four pieces aligned
+        
+        :return: whether there is four pieces aligned
         """
         self.board[y, x] = player
+        self._lowest_rows[x] -= 1
 
         return self._check_win(x, y)
     
     def to_dict(self) -> None:
+        """
+        
+        """
         self.board = self.board.tolist()
 
 class Connect4:
     def __init__(self, height:int = None, width:int = None, state:dict = None) -> None:
+        """
+        Function intended to create an instance of Connect4
+
+        :param height: the boards height
+        :param width: the boards width
+        :param state: a serialized instance of Connect4
+
+        :return: an instance of Connect4
+        """
         if state is None:
+            if height is None or width is None:
+                raise Exception('')
+            
             self.NUM_PLAYERS = 2
             self.board = Board(height, width)
 
@@ -186,7 +222,8 @@ class Connect4:
         Function intended to verify the continuity of the game
         
         :param: None
-        :return: a boolean indicating if there is not more plays to be made
+        
+        :return: a boolean indicating whether there is not more plays to be made
         """
         return np.all(self.board.board[0, :] != 0)
 
@@ -195,6 +232,7 @@ class Connect4:
         Function intended to move to the next play
 
         :param: None
+        
         :return: None
         """
         self._turn += 1
@@ -204,21 +242,10 @@ class Connect4:
         Funtion intended to identify which player is playing
 
         :param: None
+       
         :return: integer indicating which player is playing
         """
         return self.turn % self.NUM_PLAYERS + 1
-
-    def _get_y(self, x:int) -> int:
-            """
-            Function intended to find out which row the piece will land on
-            :param x: x where the piece will be placed
-            :return: the y where the piece will land on
-            """
-            column = self.board.board[::-1, x]
-            # verify if there is empty spaces in that column
-            if np.any(column == 0):
-                return int(self._height - column.argmin() - 1)
-            return -1
 
     def _set_winner(self, player:int) -> None:
         """
@@ -226,6 +253,7 @@ class Connect4:
         a player won the game
 
         :param player: integer indicating which player have won the game
+        
         :return: None
         """
         self._game_won = True
@@ -238,19 +266,30 @@ class Connect4:
         :param player: integer indicating which player made that move
         :param x: x where the piece will be placed
         :param y: y where the piece will land
+
+        :return: None
         """
         self._historical_plays.append((player, x, y))
 
     def _verify_player_turn(self, player:int) -> bool:
         """
-        Function intended to verify if it's that player turn
+        Function intended to verify whether it's that player turn
 
         :param player: an integer that represents the player
-        :return: a boolean indicating if it's that player turns
+        
+        :return: a boolean indicating whether it's that player turns
         """
         return self.turn % 2 == player % 2 or player == 3
 
     def _verify_play_is_valid(self, x:int, y:int) -> bool:
+        """
+        Funtion intended to verify if a play is 
+
+        :param x:
+        :param y:
+
+        :return:
+        """
         if x < 0 or x > self._width or y < 0:
             return False
         return True
@@ -261,6 +300,7 @@ class Connect4:
 
         :param x: x where the piece will be placed
         :param player: an integer that represents the player
+        
         :return: an integer indicating if the game was won
 
                 -2 -> invalid move, out of bounds
@@ -283,7 +323,7 @@ class Connect4:
         if not self._verify_player_turn(player):
             return -1
 
-        y = self._get_y(x)
+        y = self.board._get_y(x)
         # verify if it is not possible to place a piece in thar column
         if not self._verify_play_is_valid(x, y):
             return -2
@@ -300,9 +340,25 @@ class Connect4:
         return 0
     
     def _to_dict(self) -> 'Connect4':
+        """
+        Function intended to convert the most complex data 
+        structures into basic ones, making it possible to 
+        serialize the class into a JSON object     
+
+        :param: None
+
+        :return: this instance
+        """
         self.board.to_dict()
         self.board = self.board.__dict__
         return self
     
     def serialize(self) -> dict:
+        """
+        Function intended to serialize the class data into a JSON object
+
+        :param: None
+
+        :return: a dictionary that is able to be saved in a JSON field
+        """
         return self._to_dict().__dict__

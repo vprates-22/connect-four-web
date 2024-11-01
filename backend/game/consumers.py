@@ -13,11 +13,18 @@ class PlayerBase(AsyncWebsocketConsumer):
     failed_to_connect = False
 
     async def connect(self)-> None:
+        """
+        Function intended to deal with the connection process
+
+        :param: None
+
+        :return: None
+        """
         await self._create_variables()
 
         if self.failed_to_connect:
             await self.accept()
-            await self._send_fatal_error_message(self.message)
+            await self._send_error_message(self.message, 'fatal_error')
             await self.close()
             return
 
@@ -28,9 +35,31 @@ class PlayerBase(AsyncWebsocketConsumer):
         await self._send_message_after_connection()
 
     async def _create_variables(self) -> None:
-        pass
+        """
+        Function intended to create variables related to one of the children classes
+
+        :param: None
+
+        :return: None
+        """
+        self.room = None
+        self.room_id = None
+        self.game_room = None
+
+        self.height = None
+        self.width = None
+        
+        self.connect4 = None
 
     async def _check_room_exist(self) -> None:
+        """
+        Function intended to verify whether a room has been created,
+            if it is not in the db we change the failed_to_connect to True
+        
+        :param: None
+
+        :return: None
+        """
         self.room = await sync_to_async(Rooms.objects.filter)(id = self.room_id)
         self.room = await sync_to_async(self.room.first)()
 
@@ -40,20 +69,43 @@ class PlayerBase(AsyncWebsocketConsumer):
         self.room_id = self.room_id
 
     def _check_room_is_active(self) -> None:
+        """
+        Function intended to verify whether the room is active, it means
+            either the player one is waiting or both players are online
+
+        :param: None
+
+        :return: None
+        """
         if not self.room.active:
             self.message = 'Room is inactive'
             self.failed_to_connect = True
             return
 
     async def _send_message_after_connection(self) -> None:
+        """
+        Function intended to send a message after a connection is established
+
+        :param: None
+
+        :return: None
+        """
         pass
 
-    async def _send_fatal_error_message(self, msg) -> None:
+    async def _send_error_message(self, msg:str, msgType:str='error') -> None:
+        """
+        Function intended to notify the user whether there was an error
+
+        :param msgType: type of the error
+        :param msg: text explaining the error
+
+        :return: None
+        """        
         await self.send(text_data=json.dumps({
-            'type' : 'kill',
+            'type' : msgType,
             'message' : msg,
-            'height' : self.room.height,
-            'width' : self.room.width,
+            'height' : None,
+            'width' : None,
             'player' : None,
             'x' : None,
             'turn' : None,
@@ -62,13 +114,21 @@ class PlayerBase(AsyncWebsocketConsumer):
             'winning_sequence' : None,
         }))
 
+    async def warn_player(self, event:dict) -> None:
+        """
+        Function intended to warn all active users that a new user has joined the room
 
-    async def _send_error_message(self, msg) -> None:
+        :param event: the message data [message, 
+                                        height, 
+                                        width]
+
+        :return: None
+        """
         await self.send(text_data=json.dumps({
-            'type' : 'error',
-            'message' : msg,
-            'height' : self.room.height,
-            'width' : self.room.width,
+            'type' : event['msgType'],
+            'message' : event['message'],
+            'height' : event['height'],
+            'width' : event['width'],
             'player' : None,
             'x' : None,
             'turn' : None,
@@ -77,22 +137,14 @@ class PlayerBase(AsyncWebsocketConsumer):
             'winning_sequence' : None,
         }))
 
-    async def warn_player(self, event) -> None:
-        await self.send(text_data=json.dumps(
-        {
-        'type' : 'start',
-        'message' : event['message'],
-        'height' : event['height'],
-        'width' : event['width'],
-        'player' : event['player'],
-        'x' : None,
-        'turn' : None,
-        'game_won' : None,
-        'game_winner' : None,
-        'winning_sequence' : None,
-        }))
+    async def receive(self, text_data:str|bytes|bytearray) -> None:
+        """
+        Function intended to deal with the message sent by the users
 
-    async def receive(self, text_data) -> None:
+        :param text_data: the message sent by the user
+
+        :return: None
+        """
         data = json.loads(text_data)
         x = int(data['x'])
         
@@ -122,6 +174,14 @@ class PlayerBase(AsyncWebsocketConsumer):
         await self._save_game_state()
 
     def _get_message(self, return_code:int, x:int = None) -> str:
+        """
+        Function intended to get the message associated with the return_code of the move
+
+        :param return_code: integer returned by the Connect4.make_play function
+        :param x: the x where the move was made
+        
+        :return: 
+        """
         return {
             -2 :  'Invalid move',
             -1 :  'Wrong turn',
@@ -131,16 +191,39 @@ class PlayerBase(AsyncWebsocketConsumer):
         }[return_code]
 
     async def _get_game_state(self) -> None:
+        """
+        Function intended to update the state of the game instance
+
+        :param: None
+
+        :return: None
+        """
         await sync_to_async(self.room.refresh_from_db)()
         self.connect4 = Connect4(state = self.room.game_state)
 
     async def _save_game_state(self) -> None:
+        """
+        Function intended to save the state of the game into the db
+
+        :param: None
+
+        :return: None
+        """        
         self.room.game_state = self.connect4.serialize()
         await sync_to_async(self.room.save)()
 
-    async def _send_game_message(self, x:int, message:str) -> None:
+    async def _send_game_message(self, x:int, message:str, msgType:str='play') -> None:
+        """
+        Function intended to broadcast a game move to all the active players
+
+        :param x: the x where the move was made
+        :param message: the message associated with that move
+
+        :return: None
+        """        
         await self.channel_layer.group_send(
             self.game_room, {'type' : 'broadcast.move', 
+                            'msgType' : msgType,
                             'message' : message,
                             'height' : self.room.height,
                             'width' : self.room.width,
@@ -150,33 +233,69 @@ class PlayerBase(AsyncWebsocketConsumer):
                             'game_won' : self.connect4.game_won,
                             'game_winner' : self.connect4.game_won,
                             'winning_sequence' : self.connect4.winning_sequence,
-                            }
-        )
+                            })
 
-    async def broadcast_move(self, event) -> None:
-        event_copy = {k : v for k, v in event.items()}
-        event_copy['type'] = 'play'
-        await self.send(text_data=json.dumps(event_copy))
+    async def broadcast_move(self, event:dict) -> None:
+        """
+        Function intended to send to a player a move 
 
-    async def disconnect(self, close_code) -> None:
+        :param event: the message data
+
+        :return: None
+        """                
+        await self.send(text_data=json.dumps({
+                                'type' : event['msgType'],
+                                'message' : event['message'],
+                                'height' : event['height'],
+                                'width' : event['width'],
+                                'player' : event['player'],
+                                'x' : event['x'],
+                                'turn' : event['turn'],
+                                'game_won' : event['game_won'],
+                                'game_winner' : event['game_winner'],
+                                'winning_sequence' : event['winning_sequence'],
+                                }))
+
+    async def disconnect(self, close_code:int) -> None:
+        """
+        Function intended to
+
+        :param close_code: the code send to the user to indicate why the connection is being closed
+
+        :return: None
+        """
         if self.failed_to_connect:
             return
+
+        msgType = 'viewer_out'
+        message = 'Viewer left the room'
 
         if self.player < 3:
             self.room.active = False
             await sync_to_async(self.room.save)()
 
+            msgType = 'kill'
+            message = f'Player {self.player} left the game'
+
         await self.channel_layer.group_send(
-            self.game_room, {'type' : 'disconnect.message', 'player' : self.player}
+            self.game_room, {'type' : 'disconnect.message', 'player' : self.player, 
+                                'message' : message, 'msgType' : msgType}
         )
 
         await self.channel_layer.group_discard(self.game_room, self.channel_name)
 
-    async def disconnect_message(self, event) -> None:
+    async def disconnect_message(self, event:dict) -> None:
+        """
+        Function intended to send a disconnet message to a player
+
+        :param event: the message data
+
+        :return: None
+        """
         await self.send(text_data=json.dumps(
             {
-            'type' : 'kill',
-            'message' : 'Mamba Out',
+            'type' : event['msgType'],
+            'message' : event['player'],
             'height' : None,
             'width' : None,
             'player' : event['player'],
@@ -194,6 +313,8 @@ class PlayerOneConsumer(PlayerBase):
     player = 1
 
     async def _create_variables(self) -> None:
+        self.room = None
+
         self.height = int(self.scope['url_route']['kwargs']['height'])
         self.width = int(self.scope['url_route']['kwargs']['width'])
         self.connect4 = Connect4(self.height, self.width)
@@ -216,7 +337,14 @@ class PlayerOneConsumer(PlayerBase):
             'winning_sequence' : None,
             }))
 
-    async def _create_room(self) -> str|int:
+    async def _create_room(self) -> str:
+        """
+        Function intended to generate a unique random room key
+
+        :param: None
+
+        :return: the room key otherwise an empty string
+        """
         MAX_TRIES = 10
         attempt = 0
 
@@ -240,7 +368,7 @@ class PlayerOneConsumer(PlayerBase):
 
         self.failed_to_connect = True
         self.message = 'Unable to generate a room'
-        return -1 # almost impossible to reach that point
+        return '' # almost impossible to reach that point
 
     @staticmethod
     def _generate_room_id() -> str:
@@ -272,16 +400,36 @@ class PlayerTwoConsumer(PlayerBase):
         await self._update_room_data()
 
     async def _get_game_data(self) -> None:
+        """
+        Function intended to get information about the game board
+
+        :param: None
+
+        :return: None
+        """
         self.height = self.room.height
         self.width = self.room.width
 
     def _check_room_is_full(self) -> None:
+        """
+        Funtion intended to verify if the room already has a player two
+
+        :param: None
+        
+        :return: None
+        """
         if self.room.started:
             self.message = 'Room is full'
             self.failed_to_connect = True
-            return
 
     async def _update_room_data(self) -> None:
+        """
+        Function intended to update the db, that room is now ready to start
+
+        :param: None
+
+        :return: None
+        """
         self.room.active = True
         self.room.started = True
         self.room.player_two = self.channel_name
@@ -291,10 +439,10 @@ class PlayerTwoConsumer(PlayerBase):
     async def _send_message_after_connection(self) -> None:
         await self.channel_layer.group_send(
             self.game_room, {'type' : 'warn.player',
-                             'message' : 'Ladies and gentlemen, start your engines\nbecause Stone Cold said so!',
+                             'msgType' : 'start',
+                             'message' : 'Player 2 has joined the room',
                              'height' : self.room.height,
                              'width' : self.room.width,
-                             'player' : self.player
                              })
 
 class ViewerConsumer(PlayerBase):
@@ -313,13 +461,13 @@ class ViewerConsumer(PlayerBase):
     async def _send_message_after_connection(self) -> None:
         await self.channel_layer.group_send(
             self.game_room, {'type' : 'warn.player',
-                             'message' : 'I see dead people ... AND I SEE YOU!!!',
+                             'msgType' : 'viewer_join',
+                             'message' : 'A new viewer has joined the room',
                              'height' : self.room.height,
                              'width' : self.room.width,
-                             'player' : self.player}
-        )
+                             })
 
-    async def receive(self, text_data) -> None:
+    async def receive(self, text_data:str|bytes|bytearray) -> None:
         data = json.loads(text_data)
         x = int(data['x'])
 
@@ -332,7 +480,7 @@ class ViewerConsumer(PlayerBase):
             await self._send_error_message(message)
             return
 
-        await self._send_game_message(x, message)
+        await self._send_game_message(x, message, msgType='viewer_tip')
 
     def _get_message(self, return_code:int, x:int = None) -> str:
         return {
