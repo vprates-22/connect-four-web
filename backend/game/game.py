@@ -159,7 +159,11 @@ class Board:
     
     def to_dict(self) -> None:
         """
-        
+        Function intended to turn the numpy objects into lists
+
+        :param: None
+
+        :return: None
         """
         self.board = self.board.tolist()
 
@@ -359,6 +363,6 @@ class Connect4:
 
         :param: None
 
-        :return: a dictionary that is able to be saved in a JSON field
+        :return: a dictionary that is savable in a JSON field
         """
         return self._to_dict().__dict__
