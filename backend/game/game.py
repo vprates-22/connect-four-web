@@ -28,6 +28,10 @@ class Board:
     def winning_sequence(self) -> list:
         return self._winning_sequence
 
+    @property
+    def lowest_rows(self) -> list:
+        return self._lowest_rows
+
     def _check_diagonal(self, x:int, y:int) -> bool:
         """
         Function intended to check whether there are four pieces
@@ -216,6 +220,14 @@ class Connect4:
     @property
     def historical_plays(self) -> list:
         return self._historical_plays
+
+    @property
+    def game_board(self) -> list:
+        return self.board.board.tolist()
+
+    @property
+    def lowest_tiles(self) -> list:
+        return self.board.lowest_rows
 
     @property
     def turn(self) -> int:

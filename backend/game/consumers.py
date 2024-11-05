@@ -107,6 +107,9 @@ class PlayerBase(AsyncWebsocketConsumer):
             'height' : None,
             'width' : None,
             'player' : None,
+            'game_active' : self.room.active and self.room.started,
+            'board' : None,
+            'lowest_tiles': None,
             'x' : None,
             'turn' : None,
             'game_won' : None,
@@ -130,6 +133,9 @@ class PlayerBase(AsyncWebsocketConsumer):
             'height' : event['height'],
             'width' : event['width'],
             'player' : None,
+            'game_active' : event['game_active'],
+            'board' : event['board'],
+            'lowest_tiles': event['lowest_tiles'],         
             'x' : None,
             'turn' : None,
             'game_won' : None,
@@ -164,7 +170,6 @@ class PlayerBase(AsyncWebsocketConsumer):
         if play_return_code < 0:
             await self._send_error_message(message)
             return
-
 
         await self._send_game_message(x, message)
 
@@ -228,6 +233,9 @@ class PlayerBase(AsyncWebsocketConsumer):
                             'height' : self.room.height,
                             'width' : self.room.width,
                             'player' : self.player,
+                            'game_active' : self.room.active and self.room.started,
+                            'board' : self.connect4.game_board if msgType == 'play' else None,
+                            'lowest_tiles': self.connect4.lowest_tiles if msgType == 'play' else None,                            
                             'x' : x,
                             'turn' : self.connect4.turn,
                             'game_won' : self.connect4.game_won,
@@ -242,13 +250,16 @@ class PlayerBase(AsyncWebsocketConsumer):
         :param event: the message data
 
         :return: None
-        """                
+        """
         await self.send(text_data=json.dumps({
                                 'type' : event['msgType'],
                                 'message' : event['message'],
                                 'height' : event['height'],
                                 'width' : event['width'],
                                 'player' : event['player'],
+                                'game_active' : event['game_active'],
+                                'board' : event['board'],
+                                'lowest_tiles': event['lowest_tiles'],                                
                                 'x' : event['x'],
                                 'turn' : event['turn'],
                                 'game_won' : event['game_won'],
@@ -279,7 +290,8 @@ class PlayerBase(AsyncWebsocketConsumer):
 
         await self.channel_layer.group_send(
             self.game_room, {'type' : 'disconnect.message', 'player' : self.player, 
-                                'message' : message, 'msgType' : msgType}
+                                'message' : message, 'msgType' : msgType, 
+                                'game_active' : self.room.active and self.room.started}
         )
 
         await self.channel_layer.group_discard(self.game_room, self.channel_name)
@@ -295,10 +307,13 @@ class PlayerBase(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps(
             {
             'type' : event['msgType'],
-            'message' : event['player'],
+            'message' : event['message'],
             'height' : None,
             'width' : None,
             'player' : event['player'],
+            'game_active' : event['game_active'],
+            'board' : None,
+            'lowest_tiles': None,            
             'x' : None,
             'turn' : None,
             'game_won' : None,
@@ -330,6 +345,9 @@ class PlayerOneConsumer(PlayerBase):
             'height' : self.room.height,
             'width' : self.room.width,
             'player' : None,
+            'game_active' : self.room.active and self.room.started,
+            'board' : None,
+            'lowest_tiles': None,            
             'x' : None,
             'turn' : None,
             'game_won' : None,
@@ -407,6 +425,8 @@ class PlayerTwoConsumer(PlayerBase):
 
         :return: None
         """
+        self.connect4 = Connect4(state=self.room.game_state)
+
         self.height = self.room.height
         self.width = self.room.width
 
@@ -440,7 +460,10 @@ class PlayerTwoConsumer(PlayerBase):
         await self.channel_layer.group_send(
             self.game_room, {'type' : 'warn.player',
                              'msgType' : 'start',
-                             'message' : 'Player 2 has joined the room',
+                             'message' : self.room_id,
+                             'game_active' : self.room.active and self.room.started,   
+                             'board' : self.connect4.game_board,
+                             'lowest_tiles': self.connect4.lowest_tiles,
                              'height' : self.room.height,
                              'width' : self.room.width,
                              })
@@ -458,11 +481,32 @@ class ViewerConsumer(PlayerBase):
         self._check_room_is_active()
         if self.failed_to_connect: return
 
+        self.connect4 = Connect4(state=self.room.game_state)
+
     async def _send_message_after_connection(self) -> None:
+        await self.send(json.dumps({
+                                'type' : 'start',
+                                'message': self.room_id,
+                                'height' : self.room.height,
+                                'width' : self.room.width,
+                                'player' : self.player,
+                                'game_active' : self.room.active and self.room.started,
+                                'board' : self.connect4.game_board,
+                                'lowest_tiles': self.connect4.lowest_tiles,
+                                'x' : None,
+                                'turn' : None,
+                                'game_won' : None,
+                                'game_winner' : None,
+                                'winning_sequence' : None,                        
+                            }))
+
         await self.channel_layer.group_send(
             self.game_room, {'type' : 'warn.player',
                              'msgType' : 'viewer_join',
                              'message' : 'A new viewer has joined the room',
+                             'game_active' : self.room.active and self.room.started,
+                             'board' : None,
+                             'lowest_tiles': None,                          
                              'height' : self.room.height,
                              'width' : self.room.width,
                              })

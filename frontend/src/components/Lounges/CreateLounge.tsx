@@ -15,11 +15,10 @@ const CreateLounge = () => {
             navigate('/', { state : {  }});
             return;
         }
-        console.log(context.socket?.readyState);
     }, [context.socket?.readyState, navigate])
 
     return (
-        context.gameState === 0 ?
+        !context.gameState ?
             <RoomIdPopUp/>:
             <Board/>
     )

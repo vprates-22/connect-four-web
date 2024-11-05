@@ -8,7 +8,7 @@ interface WebSocketContextParams {
 export interface Context {
     socket:WebSocket|null;
     board:Array<Array<number>>;
-    gameState:number;
+    gameState:boolean;
     lowestTiles:Array<number>;
     roomId:string;
 }
@@ -19,6 +19,9 @@ export interface Message {
     height:number;
     width:number;
     player:number;
+    game_active:boolean,
+    board:Array<Array<number>>,
+    lowest_tiles:Array<number>,    
     x:number;
     turn:number;
     game_won:boolean;
@@ -31,67 +34,54 @@ export const WSContext = createContext<Context>();
 const WebsocketProvider = ( props:WebSocketContextParams ) => {
     const ws = useRef<WebSocket | null>(null);
     const [roomId, setRoomId] = useState<string>("");
-    const [gameState, setGameState] = useState<number>(0);
+    const [gameState, setGameState] = useState<boolean>(false);
     const [board, setBoard] = useState<Array<Array<number>>>([]);
     const [lowestTiles, setLowestTiles] = useState<Array<number>>([]);
 
     useEffect(() => {
             ws.current = new WebSocket(props.WS_URL);
-
-            let newBoard:Array<Array<number>> = [];
-            let newLowestTiles:Array<number> = [];
-
+            
             ws.current.onopen = () => {console.log("CONNECT")};
             ws.current.onclose = () => {console.log("DISCONNECT")};
             ws.current.onmessage = (e) => {
                     const data:Message = JSON.parse(e.data);
+                    if(data.game_active != gameState){
+                        setGameState(data.game_active);
+                    }
                     switch(data.type){
                         case "room-id":
                             setRoomId(data.message);
                             break;
                         case "start":
-                            setGameState(1);
+                            setRoomId(data.message);
 
-                            newLowestTiles = new Array(data.width).fill(data.height-1)
-                            setLowestTiles(newLowestTiles);
-    
-                            newBoard = new Array(data.height).fill(Array(data.width).fill(0));
-                            setBoard(newBoard);
+                            setBoard(data.board);
+                            setLowestTiles(data.lowest_tiles);
                             break;
+                        case "viewer_join":
+                            console.log(data.message);
+                            break;                            
                         case "error":
+                            console.log('ERROR: ', data.message);
                             break;
                         case "play":
-                            const x = data.x;
-                            const y = newLowestTiles[x];
-                            
-                            console.log(x)
-                            console.log(y)
-
-                            newBoard = newBoard.map((r, rowIndex) => 
-                                r.map((tile, colIndex) => {
-                                    if(rowIndex == y && colIndex == x)
-                                        return data.player;
-                                    return tile;
-                                })
-                            )
-                            setBoard(newBoard);
-
-                            newLowestTiles = newLowestTiles.map((lowest, colIndex) => {
-                                if(colIndex === x)
-                                    return lowest - 1;
-                                return lowest;
-                            });
-                            setLowestTiles(newLowestTiles);
-                            
-                            console.log(newBoard)
+                            setBoard(data.board);
+                            setLowestTiles(data.lowest_tiles);
+                            break;
+                        case "viewer_tip":
+                            console.log(`Viewer adviced you to play in the ${data.x}`);
                             break;
                         case "kill":
                             if(data.player < 3){
-                                setGameState(-1);
+                                setGameState(false);
                                 ws.current?.close();
                             }
                             break;
+                        case "viewer_out":
+                            console.log(data.message);
+                            break;
                         default:
+                            console.log(data);
                             break;
                     }
                 };

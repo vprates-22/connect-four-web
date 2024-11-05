@@ -21,8 +21,11 @@ const GamePage = () => {
     if(hasState){
         let { ws_url } = location.state as {ws_url:string};
         url = ws_url;
-    }
-    
+    }   
+
+    // ensure that the user is redirected to the Home Page on page refresh
+    window.history.replaceState({}, '');
+
     return (
         <WebsocketProvider WS_URL={url}>
             <CreateLounge/>
