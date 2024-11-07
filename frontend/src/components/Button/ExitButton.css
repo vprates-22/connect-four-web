@@ -1,0 +1,13 @@
+.ExitButton{
+    color: aliceblue;
+    font-size: 25px;
+
+    background-color: #6A9AB0;
+    border-radius: 100px;
+    border: none;
+
+    text-align: center;
+
+    height: 50px;
+    width: 200px;
+}

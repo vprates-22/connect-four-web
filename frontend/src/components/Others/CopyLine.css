@@ -1,0 +1,23 @@
+.LineInfo{
+    display: flex;
+    flex-direction:row;
+
+    align-items: center;
+}
+
+.CopyImg{
+    padding-left: 25px;
+
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#copyIcon{
+    height: 30px;
+    width: 30px;
+
+    display: flex;
+}

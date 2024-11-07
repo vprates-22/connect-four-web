@@ -2,37 +2,25 @@ import { WSContext } from "../WSContext/CreateWsContext";
 import BasePopUpHeader from "./BasePopUpHeader";
 import BasePopUp from "./BasePopUp";
 
-import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 
 import './RoomIdPopUp.css'
+import CopyLine from "../Others/CopyLine";
+import ExitButton from "../Button/ExitButton";
 
 const RoomIdPopUp = () => {
-    const navigate = useNavigate();
     const context = useContext(WSContext);
 
     const host = window.location.host;
     const path = `${host}/join/${context.roomId}/`;
 
-    const copyRoomId = () => {
-        navigator.clipboard.writeText(path);
-    }
-
     return(
         <BasePopUp open={true} id="RoomIdPopUp">
             <BasePopUpHeader closeButton={false} title="Your Room Id" onClose={()=>{}}/>
             <div className="RoomIdDiv">
-                <div className="RoomIdLine">
-                    <div id='RoomId'>
-                        {path}
-                    </div>
-                    <div className="CopyImg">
-                        <img id='copyIcon' src='/Copy.png' onClick={() => {copyRoomId()}}></img>
-                    </div>
-                </div>
+                <CopyLine info={path}/>
             </div>
-            <button className='GoHomeButton' type='submit' 
-            onClick={() => {navigate('/')}}>Exit Room</button>
+            <ExitButton idName="PopUpGoHomeButton" text="Exit Room" redirectPath='/'/>
         </BasePopUp>         
     );
 }

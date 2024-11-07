@@ -4,6 +4,8 @@ import RoomIdPopUp from "../PopUp/RoomIdPopUp";
 import { useContext, useEffect } from "react";
 import { WSContext } from "../WSContext/CreateWsContext";
 import { useNavigate } from "react-router-dom";
+import GameFooter from "../../components/Footer/GameFooter";
+
 
 const CreateLounge = () => {
     const context = useContext(WSContext);
@@ -20,7 +22,10 @@ const CreateLounge = () => {
     return (
         !context.gameState ?
             <RoomIdPopUp/>:
-            <Board/>
+            <>
+                <Board/>            
+                <GameFooter/>
+            </>
     )
 }
 

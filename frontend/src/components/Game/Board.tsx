@@ -34,7 +34,9 @@ const BuildBoard = (props:BuildBoardParams) => {
     return(
         <div className='BoardColumns'>
             {
-                props.board.map((r, rowIndex) => <BuildRow key={rowIndex} row={r} rowIndex={rowIndex} handleClick={props.handleClick}/>)
+            props.board.map((r, rowIndex) => 
+                <BuildRow key={rowIndex} row={r} 
+                rowIndex={rowIndex} handleClick={props.handleClick}/>)
             }
         </div>
     );

@@ -1,0 +1,33 @@
+.GameFooter{
+    display: flex;
+    flex-direction: row;
+
+    background-color: #001F3F;
+    
+    position: absolute;
+    bottom: 0px;
+
+    height: 80px;
+    width: 100%;
+
+    justify-content: center;
+}
+
+#ExitRoomButton{
+    position: absolute;
+
+    bottom: 15px;
+    left: 20px;
+}
+
+#ExtraInfo{
+    color: aliceblue;
+
+    position: absolute;
+    align-items: center;
+}
+
+#Info{
+    color: aliceblue;
+    font-size: 25px;
+}
