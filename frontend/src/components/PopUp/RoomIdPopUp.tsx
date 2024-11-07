@@ -16,7 +16,8 @@ const RoomIdPopUp = () => {
 
     return(
         <BasePopUp open={true} id="RoomIdPopUp">
-            <BasePopUpHeader closeButton={false} title="Your Room Id" onClose={()=>{}}/>
+            <BasePopUpHeader closeButton={false} 
+            title="Invite your friend" onClose={()=>{}}/>
             <div className="RoomIdDiv">
                 <CopyLine info={path}/>
             </div>

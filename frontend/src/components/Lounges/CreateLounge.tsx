@@ -5,6 +5,7 @@ import { useContext, useEffect } from "react";
 import { WSContext } from "../WSContext/CreateWsContext";
 import { useNavigate } from "react-router-dom";
 import GameFooter from "../../components/Footer/GameFooter";
+import GameScore from "../Game/Score";
 
 
 const CreateLounge = () => {
@@ -23,6 +24,7 @@ const CreateLounge = () => {
         !context.gameState ?
             <RoomIdPopUp/>:
             <>
+                <GameScore/>
                 <Board/>            
                 <GameFooter/>
             </>

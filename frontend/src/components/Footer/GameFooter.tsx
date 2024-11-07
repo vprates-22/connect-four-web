@@ -12,7 +12,7 @@ const GameFooter = () => {
     return(
         <footer className="GameFooter">
             <ExitButton idName="ExitRoomButton" text='Exit Room' redirectPath="/"/>
-            <p id="ExtraInfo">Invite Your Friends</p>
+            <p id="Instruction">Invite Your Friends</p>
             <CopyLine info={context.roomId}/>
         </footer>
     );

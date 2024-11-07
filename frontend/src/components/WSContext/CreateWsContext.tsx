@@ -11,6 +11,8 @@ export interface Context {
     gameState:boolean;
     lowestTiles:Array<number>;
     roomId:string;
+    turn:number;
+    winningSeq:Array<Array<number>>;
 }
 
 export interface Message {
@@ -19,24 +21,26 @@ export interface Message {
     height:number;
     width:number;
     player:number;
-    game_active:boolean,
-    board:Array<Array<number>>,
-    lowest_tiles:Array<number>,    
+    game_active:boolean;
+    board:Array<Array<number>>;
+    lowest_tiles:Array<number>;    
     x:number;
     turn:number;
     game_won:boolean;
     game_winner:number;
-    winning_sequence:Array<number>;
+    winning_sequence:Array<Array<number>>;
 }
     
 export const WSContext = createContext<Context>();
 
 const WebsocketProvider = ( props:WebSocketContextParams ) => {
     const ws = useRef<WebSocket | null>(null);
+    const [turn, setTurn] = useState<number>(1);
     const [roomId, setRoomId] = useState<string>("");
     const [gameState, setGameState] = useState<boolean>(false);
     const [board, setBoard] = useState<Array<Array<number>>>([]);
     const [lowestTiles, setLowestTiles] = useState<Array<number>>([]);
+    const [winningSeq, setWinningSeq] = useState<Array<Array<number>>>([]);
 
     useEffect(() => {
             ws.current = new WebSocket(props.WS_URL);
@@ -57,6 +61,9 @@ const WebsocketProvider = ( props:WebSocketContextParams ) => {
 
                             setBoard(data.board);
                             setLowestTiles(data.lowest_tiles);
+
+                            setTurn(data.turn);
+                            setWinningSeq(data.winning_sequence);
                             break;
                         case "viewer_join":
                             console.log(data.message);
@@ -67,6 +74,9 @@ const WebsocketProvider = ( props:WebSocketContextParams ) => {
                         case "play":
                             setBoard(data.board);
                             setLowestTiles(data.lowest_tiles);
+                            
+                            setTurn(data.turn);
+                            setWinningSeq(data.winning_sequence);
                             break;
                         case "viewer_tip":
                             console.log(`Viewer adviced you to play in the ${data.x}`);
@@ -94,6 +104,8 @@ const WebsocketProvider = ( props:WebSocketContextParams ) => {
         lowestTiles : lowestTiles,
         gameState : gameState,
         roomId : roomId,
+        turn : turn,
+        winningSeq : winningSeq,
     }
 
     return (

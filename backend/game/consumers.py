@@ -137,10 +137,10 @@ class PlayerBase(AsyncWebsocketConsumer):
             'board' : event['board'],
             'lowest_tiles': event['lowest_tiles'],         
             'x' : None,
-            'turn' : None,
-            'game_won' : None,
-            'game_winner' : None,
-            'winning_sequence' : None,
+            'turn' : event.get('turn', None),
+            'game_won' : event.get('game_won', None),
+            'game_winner' : event.get('game_winner', None),
+            'winning_sequence' : event.get('winning_sequence', None),
         }))
 
     async def receive(self, text_data:str|bytes|bytearray) -> None:
@@ -466,6 +466,10 @@ class PlayerTwoConsumer(PlayerBase):
                              'lowest_tiles': self.connect4.lowest_tiles,
                              'height' : self.room.height,
                              'width' : self.room.width,
+                             'turn' : self.connect4.turn,
+                             'game_won' : self.connect4.game_won,
+                             'game_winner' : self.connect4.game_winner,
+                             'winning_sequence' : self.connect4.winning_sequence, 
                              })
 
 class ViewerConsumer(PlayerBase):
@@ -484,6 +488,17 @@ class ViewerConsumer(PlayerBase):
         self.connect4 = Connect4(state=self.room.game_state)
 
     async def _send_message_after_connection(self) -> None:
+        await self.channel_layer.group_send(
+            self.game_room, {'type' : 'warn.player',
+                             'msgType' : 'viewer_join',
+                             'message' : 'A new viewer has joined the room',
+                             'game_active' : self.room.active and self.room.started,
+                             'board' : None,
+                             'lowest_tiles': None,                          
+                             'height' : None,
+                             'width' : None,
+                             })
+        
         await self.send(json.dumps({
                                 'type' : 'start',
                                 'message': self.room_id,
@@ -494,22 +509,11 @@ class ViewerConsumer(PlayerBase):
                                 'board' : self.connect4.game_board,
                                 'lowest_tiles': self.connect4.lowest_tiles,
                                 'x' : None,
-                                'turn' : None,
-                                'game_won' : None,
-                                'game_winner' : None,
-                                'winning_sequence' : None,                        
+                                'turn' : self.connect4.turn,
+                                'game_won' : self.connect4.game_won,
+                                'game_winner' : self.connect4.game_winner,
+                                'winning_sequence' : self.connect4.winning_sequence,                        
                             }))
-
-        await self.channel_layer.group_send(
-            self.game_room, {'type' : 'warn.player',
-                             'msgType' : 'viewer_join',
-                             'message' : 'A new viewer has joined the room',
-                             'game_active' : self.room.active and self.room.started,
-                             'board' : None,
-                             'lowest_tiles': None,                          
-                             'height' : self.room.height,
-                             'width' : self.room.width,
-                             })
 
     async def receive(self, text_data:str|bytes|bytearray) -> None:
         data = json.loads(text_data)

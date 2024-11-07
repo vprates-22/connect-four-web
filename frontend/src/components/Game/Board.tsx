@@ -15,15 +15,28 @@ interface BuildRowParams {
 }
 
 const BuildRow = (props:BuildRowParams) => {
+    const context = useContext(WSContext);
     return(
         <div className='BoardRow'>
             {
-                props.row.map((tile, colIndex) => 
-                    tile === 0 ?
-                    <div className='BoardTile' id='Empty' key={colIndex} onClick={() => {props.handleClick(colIndex)}}/>
-                    : tile === 1 ?
-                        <div className='BoardTile' id='Red' key={colIndex} onClick={() => {props.handleClick(colIndex)}}/>
-                        :<div className='BoardTile' id='Yellow' key={colIndex} onClick={() => {props.handleClick(colIndex)}}/>
+                props.row.map((tile, colIndex) => {
+                    const actualPosition = [props.rowIndex, colIndex]
+                    const isWinningSeq = context.winningSeq.some(a => actualPosition.every((v, i) => v === a[i]));
+                    const content = isWinningSeq? '★' : '';
+                    switch(tile){
+                        case 0:
+                            return <div className='BoardTile' id='Empty' key={colIndex}
+                            onClick={() => {props.handleClick(colIndex)}}>{content}</div>
+                        case 1:
+                            return <div className='BoardTile' id='Red' key={colIndex} 
+                            onClick={() => {props.handleClick(colIndex)}}>{content}</div>
+                        case 2:
+                            return <div className='BoardTile' id='Yellow' key={colIndex} 
+                            onClick={() => {props.handleClick(colIndex)}}>{content}</div>
+                        default:
+                            return;
+                    }
+                }
                 )
             }
         </div>
