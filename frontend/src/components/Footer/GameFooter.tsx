@@ -1,10 +1,10 @@
+import CopyLine from "../Others/CopyLine";
+import ExitButton from "../Button/ExitButton";
 import { WSContext } from "../WSContext/CreateWsContext";
 
 import { useContext } from "react"
-import CopyLine from "../Others/CopyLine";
 
 import './GameFooter.css'
-import ExitButton from "../Button/ExitButton";
 
 const GameFooter = () => {
     const context = useContext(WSContext);

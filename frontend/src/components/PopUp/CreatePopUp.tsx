@@ -1,9 +1,10 @@
-import { useNavigate } from "react-router-dom";
-import PopUp, { PopUpOpenParams } from "./BasePopUp.tsx";
 import BasePopUpHeader from "./BasePopUpHeader.tsx";
+import PopUp, { PopUpOpenParams } from "./BasePopUp.tsx";
+import ContinueButton from "../Button/ContinueCreateButton.tsx";
+
+import { ChangeEvent, useState } from "react";
 
 import "./CreatePopUp.css"
-import { ChangeEvent, useState } from "react";
 
 interface CreateOptParams {
     idName:string;
@@ -22,6 +23,14 @@ interface GetBoardParamsParams {
 interface TimeParamsParams {
     setTimePTurn:(val:any)=>void;
     setTimePPlayer:(val:any)=>void;
+}
+
+interface CreateOptBodyParams{
+    idName:string;
+    setHeight:(val:any)=>void;
+    setWidth:(val:any)=>void;
+    setTimePTurn:(val:any)=>void;
+    setTimePPlayer:(val:any)=>void;    
 }
 
 const CreateOptions = (props:CreateOptParams) => {
@@ -52,12 +61,12 @@ const GetBoardParams = (props:GetBoardParamsParams) => {
         <div className='Params'>
             <label>Height......................................</label> 
             <CreateOptions {...{idName:'Height', minVal:6, maxVal:10,
-                                stepSize:1, defaultVal:heightDefault, setValue:props.setHeight}}/>
+                                stepSize:1, defaultVal:HEIGTH_DEFAULT, setValue:props.setHeight}}/>
         </div>
         <div className='Params'>
             <label>Width.......................................</label> 
             <CreateOptions {...{idName:'Width', minVal:7, maxVal:12, 
-                                stepSize:1, defaultVal:widthDefault, setValue:props.setWidth}}/>
+                                stepSize:1, defaultVal:WIDTH_DEFAULT, setValue:props.setWidth}}/>
         </div>
     </div>
     );
@@ -70,43 +79,51 @@ const TimeParams = (props:TimeParamsParams) => {
         <div className='Params'>
             <label>Seconds per Turn...................</label>
             <CreateOptions {...{idName:'TimePTurn', minVal:20, maxVal:50,
-                                stepSize:10, defaultVal:timePTurnDefault, setValue:props.setTimePTurn}}/>
+                                stepSize:10, defaultVal:TIME_P_TURN_DEFAULT, setValue:props.setTimePTurn}}/>
         </div>
         <div className='Params'>
             <label>Minutes per Player................</label>
             <CreateOptions {...{idName:'TimePPlayer', minVal:2, maxVal:5,
-                                stepSize:1, defaultVal:timePPlayerDefault, setValue:props.setTimePPlayer}}/>
+                                stepSize:1, defaultVal:TIME_P_PLAYER_DEFAULT, setValue:props.setTimePPlayer}}/>
         </div>
     </div>
     );
 }
 
-const heightDefault = 7;
-const widthDefault = 8;
-const timePTurnDefault = 30;
-const timePPlayerDefault = 4;
+export const HEIGTH_DEFAULT = 7;
+export const WIDTH_DEFAULT = 8;
+export const TIME_P_TURN_DEFAULT = 30;
+export const TIME_P_PLAYER_DEFAULT = 4;
+
+export const CreatePopUpBody = (props:CreateOptBodyParams) => {
+    return (
+        <div className='GameParams' id={props.idName}>
+            <GetBoardParams {...{setHeight:props.setHeight, setWidth:props.setWidth}}/>
+            <TimeParams {...{setTimePTurn: props.setTimePTurn, setTimePPlayer: props.setTimePPlayer}}/>
+        </div>
+    );
+}
 
 const CreatePopUp = (props:PopUpOpenParams) => {
-    const navigate = useNavigate();
-    const [height, setHeight] = useState<number>(heightDefault);
-    const [width, setWidth] = useState<number>(widthDefault);
-    const [timePTurn, setTimePTurn] = useState<number>(timePTurnDefault);
-    const [timePPlayer, setTimePPlayer] = useState<number>(timePPlayerDefault);
+    const [height, setHeight] = useState<number>(HEIGTH_DEFAULT);
+    const [width, setWidth] = useState<number>(WIDTH_DEFAULT);
+    const [timePTurn, setTimePTurn] = useState<number>(TIME_P_TURN_DEFAULT);
+    const [timePPlayer, setTimePPlayer] = useState<number>(TIME_P_PLAYER_DEFAULT);
 
-    const playContinue = () => {
-        const ws_url = `ws://127.0.0.1:8000/ws/create/${height}/${width}/`
-        navigate('/play/', {state: {ws_url}})
-    }
-
+    document.addEventListener('keyup', (e) => {
+        if(e.code === 'Escape'){
+            props.onClose();
+        }
+    })
+    
     return (
     <PopUp id='CreatePopUp' open={props.open}>
         <BasePopUpHeader title='Create Room' closeButton={true} onClose={props.onClose}/>
-        <div className='GameParams'>
-            <GetBoardParams {...{setHeight:setHeight, setWidth:setWidth}}/>
-            <TimeParams {...{setTimePTurn: setTimePTurn, setTimePPlayer: setTimePPlayer}}/>
-        </div>
-        <button className='SubmitButton' type='submit' 
-        onClick={playContinue}>Continue</button>
+        <CreatePopUpBody idName="GameParamsBody" setHeight={setHeight} setWidth={setWidth}
+        setTimePTurn={setTimePTurn} setTimePPlayer={setTimePPlayer}/>
+        <ContinueButton idName="ContinueCreate" insideText="Continue"
+        toPath="/play/" wsUrl={`ws://127.0.0.1:8000/ws/create/${height}/${width}/`}
+        condition={true}/>
     </PopUp>
     );
 }

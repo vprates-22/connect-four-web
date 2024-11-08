@@ -1,12 +1,12 @@
-import { WSContext } from "../WSContext/CreateWsContext";
-import BasePopUpHeader from "./BasePopUpHeader";
 import BasePopUp from "./BasePopUp";
+import CopyLine from "../Others/CopyLine";
+import ExitButton from "../Button/ExitButton";
+import BasePopUpHeader from "./BasePopUpHeader";
+import { WSContext } from "../WSContext/CreateWsContext";
 
 import { useContext } from "react";
 
 import './RoomIdPopUp.css'
-import CopyLine from "../Others/CopyLine";
-import ExitButton from "../Button/ExitButton";
 
 const RoomIdPopUp = () => {
     const context = useContext(WSContext);

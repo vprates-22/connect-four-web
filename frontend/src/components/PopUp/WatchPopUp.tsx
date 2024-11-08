@@ -1,13 +1,12 @@
-import PopUp, { PopUpOpenParams } from "./BasePopUp";
 import BasePopUpHeader from "./BasePopUpHeader";
+import PopUp, { PopUpOpenParams } from "./BasePopUp";
+import ContinueButton from "../Button/ContinueCreateButton";
 
-import { useNavigate } from "react-router-dom";
 import { ChangeEvent, ClipboardEvent, useState } from "react";
 
 import "./WatchPopUp.css"
 
 const WatchPopUp = (props:PopUpOpenParams) => {
-    const navigate = useNavigate();
     const [roomId, setRoomId] = useState<string>("");
 
     const handleChange = (event:ChangeEvent<HTMLInputElement>) => {
@@ -20,13 +19,11 @@ const WatchPopUp = (props:PopUpOpenParams) => {
         setRoomId(pastedText);
     }
 
-    const handleClick = () => {
-        if(roomId.length != 20){
-            return;
+    document.addEventListener('keyup', (e) => {
+        if(e.code === 'Escape'){
+            props.onClose();
         }
-        const ws_url = `ws://127.0.0.1:8000/ws/watch/${roomId}/`
-        navigate('/watch/', {state: { ws_url }})
-    }
+    })
 
     return (
         <>
@@ -39,8 +36,9 @@ const WatchPopUp = (props:PopUpOpenParams) => {
                 onChange={handleChange}
                 onPaste={handlePaste}/>
             </div>
-            <button className='SubmitButton' type='submit'
-            onClick={handleClick}>Continue</button>
+            <ContinueButton idName="WatchContinue" insideText="Continue"
+            toPath="/watch/" wsUrl={`ws://127.0.0.1:8000/ws/watch/${roomId}/`}
+            condition={roomId.length === 20}/>
         </PopUp>
         </>
     );

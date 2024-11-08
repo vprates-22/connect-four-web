@@ -9,7 +9,7 @@
     width: 500px;
 }
 
-.GameParams{
+#GameParamsBody{
     background-color: #6A9AB0;
 
     display: flex;
@@ -63,28 +63,8 @@ label{
     font-size: 23px;
 }
 
-.SubmitButton{
+#ContinueCreate{
     position: absolute;
     bottom: 20px;
     right: 20px;
-    
-    justify-content: right;
-
-    color: aliceblue;
-    font-size: 25px;
-
-    background-color: #6A9AB0;
-    border-radius: 100px;
-    border: none;
-
-    text-align: center;
-
-
-    height: 50px;
-    width: 200px;
-}
-
-.SubmitButton:hover{
-    background-color: #3A6D8C;
-    font-size: 25.3px;
 }
