@@ -13,7 +13,6 @@ const HomePage = () => {
     const [watchPopUpOpen, setWatchPopUpOpen] = useState<boolean>(false)
 
     return (
-        <>
         <main>
             <NavBar/>
             <div className={(createPopUpOpen || watchPopUpOpen) ? 'HomeDivBlur' : 'HomeDiv'}>
@@ -31,10 +30,9 @@ const HomePage = () => {
                     <OpenPopUpButton idName="Watch" insideText="Watch" setPopUpOpen={() => setWatchPopUpOpen(true)}/>
                 </div>
             </div>
-            <CreatePopUp open={createPopUpOpen} onClose={() => setCreatePopUpOpen(false)}/>
-            <WatchPopUp open={watchPopUpOpen} onClose={() => setWatchPopUpOpen(false)}/>
+            <CreatePopUp open={createPopUpOpen} onClose={() => setCreatePopUpOpen(false)} closeButton={true}/>
+            <WatchPopUp open={watchPopUpOpen} onClose={() => setWatchPopUpOpen(false)} closeButton={true}/>
         </main>
-        </>
     );
 }
 

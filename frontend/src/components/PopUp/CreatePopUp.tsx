@@ -118,7 +118,7 @@ const CreatePopUp = (props:PopUpOpenParams) => {
     
     return (
     <PopUp id='CreatePopUp' open={props.open}>
-        <BasePopUpHeader title='Create Room' closeButton={true} onClose={props.onClose}/>
+        <BasePopUpHeader title='Create Room' closeButton={props.closeButton} onClose={props.onClose}/>
         <CreatePopUpBody idName="GameParamsBody" setHeight={setHeight} setWidth={setWidth}
         setTimePTurn={setTimePTurn} setTimePPlayer={setTimePPlayer}/>
         <ContinueButton idName="ContinueCreate" insideText="Continue"

@@ -28,7 +28,7 @@ const WatchPopUp = (props:PopUpOpenParams) => {
     return (
         <>
         <PopUp id='WatchPopUp' open={props.open}>
-            <BasePopUpHeader title='Watch Room' closeButton={true} onClose={props.onClose}/>
+            <BasePopUpHeader title='Watch Room' closeButton={props.closeButton} onClose={props.onClose}/>
             <div className='WatchParams'>
                 <input type='text' className='GameRoom' 
                 name='GameRoom' id='GameRoom'
