@@ -1,5 +1,5 @@
 import BasePopUp from "./BasePopUp";
-import CopyLine from "../Others/CopyLine";
+import CopyLine from "../Lines/CopyLine";
 import ExitButton from "../Button/ExitButton";
 import BasePopUpHeader from "./BasePopUpHeader";
 import { WSContext } from "../WSContext/CreateWsContext";

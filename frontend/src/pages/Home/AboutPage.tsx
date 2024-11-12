@@ -63,7 +63,7 @@ const AboutPage = () => {
                 on building the logic and infrastructure that support applications and make products
                 functional and effective.
                 </p>
-                <a id='GitHubLink' href="https://github.com/vprates-22">
+                <a id='GitHubLink' href="https://github.com/vprates-22" target="_blank">
                 Click here to see more of my projects.
                 </a>
             </div>

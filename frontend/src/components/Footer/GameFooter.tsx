@@ -1,4 +1,4 @@
-import CopyLine from "../Others/CopyLine";
+import CopyLine from "../Lines/CopyLine";
 import ExitButton from "../Button/ExitButton";
 import { WSContext } from "../WSContext/CreateWsContext";
 

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import "./CopyLine.css";
 
 interface CopyLineParams{
@@ -5,8 +6,18 @@ interface CopyLineParams{
 }
 
 const CopyLine = (props:CopyLineParams) => {
+    const [message, setMessage] = useState<string>("");
+    
     const copyInfo = () => {
-        navigator.clipboard.writeText(props.info);
+        const result = navigator.clipboard.writeText(props.info);
+
+        result.then(() => {
+            setMessage("Copied");
+        }).finally(() => {
+            setTimeout(() => {
+                setMessage("");
+            }, 1000);
+        })
     }    
 
     return(
@@ -17,6 +28,9 @@ const CopyLine = (props:CopyLineParams) => {
             </div>
             <div className="CopyImg">
                 <img id='copyIcon' src='/Copy.png' onClick={copyInfo}/>
+            </div>
+            <div className="CopiedMessage">
+            {message}
             </div>
         </div>
         </>

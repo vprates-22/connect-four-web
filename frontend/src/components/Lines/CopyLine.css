@@ -1,4 +1,6 @@
 .LineInfo{
+    position: relative;
+
     display: flex;
     flex-direction:row;
 
@@ -20,4 +22,18 @@
     width: 30px;
 
     display: flex;
+}
+
+.CopiedMessage{
+    position: absolute;
+
+    color:aliceblue;
+    background-color: grey;
+    font-size: 20px;
+    
+    border-radius: 10px;
+    
+    right: -20px;
+
+    z-index: 1;
 }
