@@ -4,6 +4,7 @@ import GamePage from "./pages/Game/GamePage";
 import LoungeJoin from "./components/Lounges/JoinLounge";
 import CreateRoomPage from "./pages/Join/CreateRoomPage";
 import WatchRoomPage from "./pages/Join/WatchRoomPage";
+import AboutPage from "./pages/Home/AboutPage";
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
       <Route path='/' element={<HomePage/>}></Route>
       <Route path='/create+room/' element={<CreateRoomPage/>}></Route>
       <Route path='/watch+room/' element={<WatchRoomPage/>}></Route>
+      <Route path='/about/' element={<AboutPage/>}></Route>
       <Route path='/play/' element={<GamePage/>}></Route>
       <Route path='/join/:roomId' element={<LoungeJoin/>}></Route>
       <Route path='/watch/' element={<GamePage/>}></Route>

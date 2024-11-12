@@ -5,7 +5,8 @@
 
     height: 50px;
     width: 100%;
-    top: 0px;
+
+    z-index: 1;
 
     font-size: 25px;
     align-items: center;

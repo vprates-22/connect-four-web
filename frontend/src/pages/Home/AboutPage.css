@@ -1,0 +1,43 @@
+.AboutInfo{
+    position: relative;
+
+    left: 50%;
+    top: 100px;
+    
+    margin-left: -350px;
+
+    height: 700px;
+    width: 700px;
+
+    text-align: center;
+}
+
+.AboutSubTitle{
+    color: #001F3F;
+    font-size: 60px;
+}
+
+.AboutText{
+    color: #3A6D8C;
+    font-size:30px;
+    text-indent: 50px;
+    text-align: justify;
+}
+
+#GitHubLink{
+    font-size: 40px;
+    color: #001F3F;
+    padding-top: 100px;
+    padding-bottom: 200px;
+
+    animation-name:blink;
+    animation-duration:2s;
+    animation-timing-function:ease-in;
+    animation-iteration-count:Infinite;
+}
+    
+@keyframes blink{
+    0%{color:#001F3F;}
+    50%{color:#6A9AB0;}
+    100%{color:#001F3F;}
+}
