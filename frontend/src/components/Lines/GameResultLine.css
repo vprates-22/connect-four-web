@@ -1,0 +1,8 @@
+.GameResultText{
+    position: absolute;
+    
+    left: 50%;
+    top: 20%;
+
+    margin-left: -250px;
+}

@@ -1,6 +1,6 @@
 .ExitButton{
     color: aliceblue;
-    font-size: 25px;
+    font-size: 20px;
 
     background-color: #6A9AB0;
     border-radius: 100px;
@@ -8,6 +8,14 @@
 
     text-align: center;
 
-    height: 50px;
-    width: 200px;
+    height: 35px;
+    width: 140px;
+}
+
+.ExitButton:hover{
+    background-color: #3A6D8C;
+
+    font-size: 20.1px;
+
+    cursor: pointer;
 }

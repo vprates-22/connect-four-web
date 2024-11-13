@@ -3,12 +3,15 @@
     display: flex;
     position: fixed;
 
-    height: 50px;
+    top: 0px;
+    left:0px;
+
+    height: 35px;
     width: 100%;
 
     z-index: 1;
 
-    font-size: 25px;
+    font-size: 20px;
     align-items: center;
 
     border-bottom: 5px solid #001F3F;
@@ -18,14 +21,14 @@
     text-decoration: none;
     color: #001F3F;
     
-    width: 100px;
+    width: 80px;
 
     text-align: center;
     float: left;
 }
 
 .OptionNavBar:hover{
-    height: 100%;
+    /* height: 100%; */
     line-height: 200%;
     color: aliceblue;
     background-color: #001F3F;
@@ -35,7 +38,8 @@
 }
 
 #HomeImg{
-    height: 45px;
+    top:0px;
+    height: 40px;
     width: 100%;
 
     border: 0; 

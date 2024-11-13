@@ -2,11 +2,11 @@
     left:50%;
     top:50%;
 
-    margin-left: -400px;
-    margin-top: -200px;
+    margin-top: -150px;
+    margin-left: -300px;
 
-    height: 400px;
-    width: 800px;
+    height: 300px;
+    width: 600px;
 
     justify-content: center;
     text-align: center;
@@ -23,7 +23,7 @@
     background-color: #6A9AB0;
     
     position: relative;
-    height: 57%;
+    height: 46%;
 
     display: flex;
     flex-direction: column;
@@ -32,11 +32,11 @@
     text-align: center;
     align-items: center;
 
-    font-size: 30px;
+    font-size: 25px;
 }
 
 #PopUpGoHomeButton{
     position: absolute;
-    bottom: 10px;
-    left: 20px;
+    bottom: 7px;
+    left: 10px;
 }

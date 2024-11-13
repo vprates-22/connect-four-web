@@ -1,12 +1,12 @@
 #WatchPopUp{
-    left: 50%;
     top: 50%;
+    left: 50%;
 
-    margin-left: -350px;
-    margin-top: -250px;
+    margin-top: -150px;
+    margin-left: -300px;
 
-    height: 400px;
-    width: 700px;
+    height: 300px;
+    width: 600px;
 }
 
 .WatchParams{
@@ -19,21 +19,21 @@
     padding-left: 15px;
     padding-right: 15px;
 
-    height: 213px;
+    height: 148px;
 
     border-bottom: 3px solid aliceblue;
 }
 
 #WatchContinue{
     position: absolute;
-    bottom: 20px;
-    right: 20px;    
+    bottom: 7px;
+    right: 10px;    
 }
 
 #GameRoom{
     height: 70px;
 
-    font-size: 50px;
+    font-size: 40px;
     
     border: none;
     border-radius: 10px;

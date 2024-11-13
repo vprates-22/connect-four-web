@@ -59,12 +59,12 @@ const GetBoardParams = (props:GetBoardParamsParams) => {
     <div className='GetBoardParams'>
         <h3 className='SubTitle'>Board Shape</h3>
         <div className='Params'>
-            <label>Height......................................</label> 
+            <label>Height...........................................</label> 
             <CreateOptions {...{idName:'Height', minVal:6, maxVal:10,
                                 stepSize:1, defaultVal:HEIGTH_DEFAULT, setValue:props.setHeight}}/>
         </div>
         <div className='Params'>
-            <label>Width.......................................</label> 
+            <label>Width............................................</label> 
             <CreateOptions {...{idName:'Width', minVal:7, maxVal:12, 
                                 stepSize:1, defaultVal:WIDTH_DEFAULT, setValue:props.setWidth}}/>
         </div>
@@ -77,12 +77,12 @@ const TimeParams = (props:TimeParamsParams) => {
     <div className='TimeParams'>
         <h3 className='SubTitle'>Game Clock</h3>
         <div className='Params'>
-            <label>Seconds per Turn...................</label>
+            <label>Seconds per Turn..........................</label>
             <CreateOptions {...{idName:'TimePTurn', minVal:20, maxVal:50,
                                 stepSize:10, defaultVal:TIME_P_TURN_DEFAULT, setValue:props.setTimePTurn}}/>
         </div>
         <div className='Params'>
-            <label>Minutes per Player................</label>
+            <label>Minutes per Player........................</label>
             <CreateOptions {...{idName:'TimePPlayer', minVal:2, maxVal:5,
                                 stepSize:1, defaultVal:TIME_P_PLAYER_DEFAULT, setValue:props.setTimePPlayer}}/>
         </div>

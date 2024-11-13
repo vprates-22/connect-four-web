@@ -2,11 +2,17 @@
     background-color: #6A9AB0;
     
     color: #001F3F;
-    font-size: 30px;
+    font-size: 25px;
 
-    height: 50px;
-    width: 200px;
+    height: 40px;
+    width: 180px;
     
     border: none;
     border-radius: 15px;
+}
+
+.OptionButton:hover{
+    background-color: #3A6D8C;
+    
+    cursor: pointer;
 }

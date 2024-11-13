@@ -3,7 +3,7 @@
     background-color: #001F3F;
 
     position: absolute;
-    height: 80%;
+    height: 75%;
     width: 60%;
 
     top: 10%;
@@ -41,7 +41,7 @@
     align-items: center; 
 
     color: #001F3F;
-    font-size: 40px;
+    font-size: 35px;
 }
 
 #Empty{

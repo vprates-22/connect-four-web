@@ -1,12 +1,12 @@
 #CreatePopUp{
     left: 50%;
-    top: 40%;
+    top: 50%;
     
-    margin-left: -250px;
+    margin-left: -225px;
     margin-top: -250px;
 
-    height: 700px;
-    width: 500px;
+    width: 450px;
+    height: 500px;
 }
 
 #GameParamsBody{
@@ -19,14 +19,14 @@
     padding-left: 15px;
     padding-right: 15px;
 
-    height: 73%;
+    height: 347px;
 
     border-bottom: 3px solid aliceblue;
 }
 
 .SubTitle{
     color: aliceblue;
-    font-size: 40px;
+    font-size: 30px;
     text-align: left;
 }
 
@@ -36,7 +36,8 @@
 }
 
 label{
-    text-indent: 40px;
+    text-indent: 20px;
+    padding: 2px;
 }
 
 .Params{
@@ -44,14 +45,14 @@ label{
 
     display: flex;
     flex-direction:row;
-    justify-content: space-between;
+    justify-content: space-around;
     
-    font-size: 30px;
+    font-size: 25px;
 }
 
 .SelectBox{
     border: none;
-    height: 40px;
+    height: 30px;
     width: 50px;
     
     color: aliceblue;
@@ -60,11 +61,12 @@ label{
     border-radius: 10px;
 
     text-align: center;
-    font-size: 23px;
+    font-size: 20px;
+
 }
 
 #ContinueCreate{
     position: absolute;
-    bottom: 20px;
-    right: 20px;
+    bottom: 7px;
+    right: 10px;
 }
