@@ -11,18 +11,24 @@
     -webkit-text-stroke: 4px black;
 
     font-size: 100px;
-    transition: all 5s ease;
     z-index: 2;
+    
+    animation-name: fadein;
+    animation-duration: 10s;
+    animation-fill-mode: forwards;
 }
 
-.ResultMessage.begin{
-    top: 80%;
-    opacity: 0;
-    visibility: visible;
-}
-
-.ResultMessage.end{
-    top: 10%;
-    opacity: 1;
-    visibility: hidden;
+@keyframes fadein{
+    0% {
+        top:80%;
+        opacity: 0;
+    }
+    95% {
+        top:10%;
+        opacity: 1;
+    }
+    100% {
+        top:10%;
+        opacity: 0;
+    }
 }

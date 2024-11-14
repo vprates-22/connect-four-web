@@ -1,5 +1,3 @@
-import { useState, useEffect } from 'react';
-
 import './GameResultLine.css';
 
 interface GameResultLineParams{
@@ -7,17 +5,8 @@ interface GameResultLineParams{
 }
 
 const GameResultLine = (props:GameResultLineParams) => {
-    const [isVisible, setIsVisible] = useState(false);
-
-    useEffect(() => {
-        setIsVisible(true)
-        setTimeout(() => {
-            setIsVisible(false);
-        }, 500)
-    }, []);
-
     return (
-    <div className={`ResultMessage ${isVisible ? 'begin' : 'end'}`}>
+    <div className="ResultMessage">
         {props.resultText}
     </div>
     );
