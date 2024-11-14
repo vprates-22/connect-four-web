@@ -214,7 +214,7 @@ class Connect4:
         return self._game_won
 
     @property
-    def game_winner(self) -> bool:
+    def game_winner(self) -> int:
         return self._game_winner
 
     @property

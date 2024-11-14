@@ -1,5 +1,6 @@
 body{
     background-color: #EAD8B1;
+    font: menu;
 }
 
 .HomeDiv{
@@ -37,7 +38,7 @@ body{
 .IntroMsg{
     color: #3A6D8C;
     text-align: center;
-    font-size: 25px;
+    font-size: 20px;
     height: 100px;
     width:100%;
 }

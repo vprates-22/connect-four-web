@@ -37,7 +37,7 @@
 
 label{
     text-indent: 20px;
-    padding: 2px;
+    padding: 8px;
 }
 
 .Params{
@@ -47,7 +47,7 @@ label{
     flex-direction:row;
     justify-content: space-around;
     
-    font-size: 25px;
+    font-size: 22px;
 }
 
 .SelectBox{

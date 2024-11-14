@@ -23,7 +23,7 @@
     background-color: #6A9AB0;
     
     position: relative;
-    height: 46%;
+    height: 49%;
 
     display: flex;
     flex-direction: column;
@@ -33,6 +33,8 @@
     align-items: center;
 
     font-size: 25px;
+
+    border-bottom: 3px solid aliceblue;
 }
 
 #PopUpGoHomeButton{

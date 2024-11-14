@@ -7,6 +7,8 @@ interface WebSocketContextParams {
 
 export interface Context {
     socket:WebSocket|null;
+    player:number;
+    gameWinner:number;
     board:Array<Array<number>>;
     gameState:boolean;
     lowestTiles:Array<number>;
@@ -36,6 +38,8 @@ export const WSContext = createContext<Context>();
 const WebsocketProvider = ( props:WebSocketContextParams ) => {
     const ws = useRef<WebSocket | null>(null);
     const [turn, setTurn] = useState<number>(1);
+    const [player, setPlayer] = useState<number>(0);
+    const [winner, setWinner] = useState<number>(0);
     const [roomId, setRoomId] = useState<string>("");
     const [gameState, setGameState] = useState<boolean>(false);
     const [board, setBoard] = useState<Array<Array<number>>>([]);
@@ -45,8 +49,8 @@ const WebsocketProvider = ( props:WebSocketContextParams ) => {
     useEffect(() => {
             ws.current = new WebSocket(props.WS_URL);
             
-            ws.current.onopen = () => {console.log("CONNECT")};
-            ws.current.onclose = () => {console.log("DISCONNECT")};
+            ws.current.onopen = () => {};
+            ws.current.onclose = () => {};
             ws.current.onmessage = (e) => {
                     const data:Message = JSON.parse(e.data);
                     if(data.game_active != gameState){
@@ -58,6 +62,8 @@ const WebsocketProvider = ( props:WebSocketContextParams ) => {
                             break;
                         case "start":
                             setRoomId(data.message);
+
+                            setPlayer(data.player);
 
                             setBoard(data.board);
                             setLowestTiles(data.lowest_tiles);
@@ -77,6 +83,8 @@ const WebsocketProvider = ( props:WebSocketContextParams ) => {
                             
                             setTurn(data.turn);
                             setWinningSeq(data.winning_sequence);
+                            if(data.game_won)
+                                setWinner(data.game_winner);
                             break;
                         case "viewer_tip":
                             console.log(`Viewer adviced you to play in the ${data.x}`);
@@ -100,6 +108,8 @@ const WebsocketProvider = ( props:WebSocketContextParams ) => {
 
     const value:Context = {
         socket : ws.current,
+        player : player,
+        gameWinner : winner,
         board : board,
         lowestTiles : lowestTiles,
         gameState : gameState,

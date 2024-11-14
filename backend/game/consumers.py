@@ -132,7 +132,7 @@ class PlayerBase(AsyncWebsocketConsumer):
             'message' : event['message'],
             'height' : event['height'],
             'width' : event['width'],
-            'player' : None,
+            'player' : self.player,
             'game_active' : event['game_active'],
             'board' : event['board'],
             'lowest_tiles': event['lowest_tiles'],         
@@ -239,7 +239,7 @@ class PlayerBase(AsyncWebsocketConsumer):
                             'x' : x,
                             'turn' : self.connect4.turn,
                             'game_won' : self.connect4.game_won,
-                            'game_winner' : self.connect4.game_won,
+                            'game_winner' : self.connect4.game_winner,
                             'winning_sequence' : self.connect4.winning_sequence,
                             })
 

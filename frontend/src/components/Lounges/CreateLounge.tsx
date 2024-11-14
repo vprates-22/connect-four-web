@@ -6,6 +6,7 @@ import GameFooter from "../../components/Footer/GameFooter";
 
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import GameResultLine from "../Lines/GameResultLine";
 
 
 const CreateLounge = () => {
@@ -15,7 +16,7 @@ const CreateLounge = () => {
     useEffect(() => {
         if(context.socket?.readyState === WebSocket.CLOSING ||
             context.socket?.readyState === WebSocket.CLOSED){
-            navigate('/', { state : {  }});
+            navigate('/', { state : { }});
             return;
         }
     }, [context.socket?.readyState, navigate])
@@ -24,6 +25,12 @@ const CreateLounge = () => {
         !context.gameState ?
             <RoomIdPopUp/>:
             <>
+                {console.log(context)}
+                {context.gameWinner == 0 ?
+                "" 
+                :<GameResultLine resultText={context.gameWinner === context.player ? 
+                    "You Won!" : "You Lost!"}/>
+                }
                 <GameScore/>
                 <Board/>            
                 <GameFooter/>

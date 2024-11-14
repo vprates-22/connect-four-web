@@ -1,8 +1,28 @@
-.GameResultText{
-    position: absolute;
-    
+.ResultMessage{
+    position: fixed;
     left: 50%;
-    top: 20%;
-
     margin-left: -250px;
+    width: 500px;
+
+    text-align: center;
+
+    color: purple;
+    font-weight: bolder;
+    -webkit-text-stroke: 4px black;
+
+    font-size: 100px;
+    transition: all 5s ease;
+    z-index: 2;
+}
+
+.ResultMessage.begin{
+    top: 80%;
+    opacity: 0;
+    visibility: visible;
+}
+
+.ResultMessage.end{
+    top: 10%;
+    opacity: 1;
+    visibility: hidden;
 }
