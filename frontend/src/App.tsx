@@ -6,7 +6,6 @@ import AboutPage from "./pages/Home/AboutPage";
 import WatchRoomPage from "./pages/Join/WatchRoomPage";
 import LoungeJoin from "./components/Lounges/JoinLounge";
 import CreateRoomPage from "./pages/Join/CreateRoomPage";
-import GameResultLine from "./components/Lines/GameResultLine";
 
 function App() {
   return (
@@ -18,7 +17,7 @@ function App() {
       <Route path='/play/' element={<GamePage/>}></Route>
       <Route path='/join/:roomId' element={<LoungeJoin/>}></Route>
       <Route path='/watch/' element={<GamePage/>}></Route>
-      <Route path='*' element={<GameResultLine resultText="You won!"/>}></Route>
+      <Route path='*' element={<HomePage/>}></Route>
     </Routes>
   )
 }
