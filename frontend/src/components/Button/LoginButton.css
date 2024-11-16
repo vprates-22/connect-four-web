@@ -1,0 +1,17 @@
+.SaveButton{
+    color: aliceblue;
+    font-size: 20px;
+
+    background-color: #6A9AB0;
+    border-radius: 100px;
+    border: none;
+
+    height: 35px;
+    width: 140px;
+}
+
+.SaveButton:hover{
+    background-color: #3A6D8C;
+    font-size: 20.1px;
+    cursor: pointer;
+}

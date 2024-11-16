@@ -33,10 +33,11 @@ const WatchPopUp = (props:PopUpOpenParams) => {
                 <input type='text' className='GameRoom' 
                 name='GameRoom' id='GameRoom'
                 placeholder='Paste the room name here'
+                maxLength={20}
                 onChange={handleChange}
                 onPaste={handlePaste}/>
             </div>
-            <ContinueButton idName="WatchContinue" insideText="Continue"
+            <ContinueButton idName="WatchContinue" innerText="Continue"
             toPath="/watch/" wsUrl={`ws://127.0.0.1:8000/ws/watch/${roomId}/`}
             condition={roomId.length === 20}/>
         </PopUp>

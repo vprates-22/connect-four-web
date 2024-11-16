@@ -135,7 +135,7 @@ class PlayerBase(AsyncWebsocketConsumer):
             'player' : self.player,
             'game_active' : event['game_active'],
             'board' : event['board'],
-            'lowest_tiles': event['lowest_tiles'],         
+            'lowest_tiles': event['lowest_tiles'],
             'x' : None,
             'turn' : event.get('turn', None),
             'game_won' : event.get('game_won', None),
@@ -512,7 +512,7 @@ class ViewerConsumer(PlayerBase):
                                 'turn' : self.connect4.turn,
                                 'game_won' : self.connect4.game_won,
                                 'game_winner' : self.connect4.game_winner,
-                                'winning_sequence' : self.connect4.winning_sequence,                        
+                                'winning_sequence' : self.connect4.winning_sequence,
                             }))
 
     async def receive(self, text_data:str|bytes|bytearray) -> None:
@@ -535,4 +535,4 @@ class ViewerConsumer(PlayerBase):
             -2 :  'Invalid move',
             -1 :  'Wrong turn',
              0 : f'Viewer suggested you to play : {x}'
-        }[return_code]
+        }.get(return_code, '')

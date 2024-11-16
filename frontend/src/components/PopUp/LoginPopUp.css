@@ -1,0 +1,56 @@
+#LoginPopUp{
+    left: 50%;
+    top: 50%;
+
+    margin-left: -250px;
+    margin-top: -150px;
+
+    height: 300px;
+    width: 500px;
+}
+
+.LoginParams{
+    background-color: #6A9AB0;
+
+    height: 147px;
+
+    display: flex;
+    flex-direction: column;
+
+    /* justify-content: space-around; */
+
+    border-bottom: 3px solid aliceblue;
+}
+
+.LoginLabel{
+    font-size: 25px;
+    text-align: left;
+}
+
+.LoginLineParams{
+    margin-top: 20px;
+
+    height: 100px;
+
+    display: flex;
+    flex-direction: row;
+
+    justify-content: space-evenly;
+}
+
+#LoginTextInput{
+    height: 70%;
+    width: 60%;
+
+    font-size: 20px;
+
+    border-radius: 5px;
+    border: none;
+}
+
+#LoginSaveButton{
+    position: absolute;
+    
+    right: 10px;
+    bottom: 7px;
+}

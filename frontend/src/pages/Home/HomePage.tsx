@@ -25,9 +25,9 @@ const HomePage = () => {
                     watch then play and send advices to the players
                 </h3>
                 <div className='HomeButtons'>
-                    <OpenPopUpButton idName="Play" insideText="Play" setPopUpOpen={() => setCreatePopUpOpen(true)}/>
+                    <OpenPopUpButton idName="Play" innerText="Play" setPopUpOpen={() => setCreatePopUpOpen(true)}/>
                     <div className='divider'></div>
-                    <OpenPopUpButton idName="Watch" insideText="Watch" setPopUpOpen={() => setWatchPopUpOpen(true)}/>
+                    <OpenPopUpButton idName="Watch" innerText="Watch" setPopUpOpen={() => setWatchPopUpOpen(true)}/>
                 </div>
             </div>
             <CreatePopUp open={createPopUpOpen} onClose={() => setCreatePopUpOpen(false)} closeButton={true}/>

@@ -121,7 +121,7 @@ const CreatePopUp = (props:PopUpOpenParams) => {
         <BasePopUpHeader title='Create Room' closeButton={props.closeButton} onClose={props.onClose}/>
         <CreatePopUpBody idName="GameParamsBody" setHeight={setHeight} setWidth={setWidth}
         setTimePTurn={setTimePTurn} setTimePPlayer={setTimePPlayer}/>
-        <ContinueButton idName="ContinueCreate" insideText="Continue"
+        <ContinueButton idName="ContinueCreate" innerText="Continue"
         toPath="/play/" wsUrl={`ws://127.0.0.1:8000/ws/create/${height}/${width}/`}
         condition={true}/>
     </PopUp>

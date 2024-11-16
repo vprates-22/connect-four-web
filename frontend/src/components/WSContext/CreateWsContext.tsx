@@ -1,4 +1,5 @@
 import { createContext, useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface WebSocketContextParams {
     children:React.ReactNode;
@@ -36,6 +37,8 @@ export interface Message {
 export const WSContext = createContext<Context>();
 
 const WebsocketProvider = ( props:WebSocketContextParams ) => {
+    const navigate = useNavigate();
+
     const ws = useRef<WebSocket | null>(null);
     const [turn, setTurn] = useState<number>(1);
     const [player, setPlayer] = useState<number>(0);
@@ -73,6 +76,11 @@ const WebsocketProvider = ( props:WebSocketContextParams ) => {
                             break;
                         case "viewer_join":
                             console.log(data.message);
+                            break;                            
+                        case "fatal_error":
+                            navigate('/');
+                            ws.current?.close();
+                            window.alert(data.message);
                             break;                            
                         case "error":
                             console.log('ERROR: ', data.message);

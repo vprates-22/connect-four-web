@@ -4,7 +4,7 @@ import './ContinueCreateButton.css'
 
 interface ContinueButtonParams{
     idName:string;
-    insideText:string;
+    innerText:string;
     condition:boolean;
     toPath:string;
     wsUrl:string;
@@ -22,7 +22,7 @@ const ContinueButton = (props:ContinueButtonParams) => {
 
     return (
         <button className='ContinueButton' id={props.idName} type='submit' 
-        onClick={handleClick}>{props.insideText}</button>
+        onClick={handleClick}>{props.innerText}</button>
     );
 }
 
