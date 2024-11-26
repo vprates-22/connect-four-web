@@ -14,7 +14,7 @@ const NavBar = () => {
             <a className='OptionNavBar' id='PlayNavBar' onClick={() => navigate('/create+room/')}>Play</a>
             <a className='OptionNavBar' id='WatchNavBar' onClick={() => navigate('/watch+room/')}>Watch</a>
             <a className='OptionNavBar' id='AboutNavBar' onClick={() => navigate('/about/')}>About</a>
-            <a className='OptionNavBar' id='LoginNavBar' onClick={() => navigate('/login/')}>Login</a>
+            <a className='OptionNavBar' id='LoginNavBar' onClick={() => navigate('/login/')}>Log In</a>
         </nav>
         </>
     )

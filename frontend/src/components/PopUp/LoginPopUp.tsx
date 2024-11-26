@@ -4,7 +4,7 @@ import BasePopUpHeader from "./BasePopUpHeader";
 
 import './LoginPopUp.css'
 
-import { ChangeEvent, useState } from "react";
+import { useState } from "react";
 
 interface LoginPopUpParams{
     open:boolean;
@@ -16,35 +16,34 @@ const LoginPopUp = (props:LoginPopUpParams) => {
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
 
-    const handleChange = (event:ChangeEvent<HTMLInputElement>) => {
-        const modifiedText = event.target.value;
-        setUsername(modifiedText);
-    }
-
-    const handleClick = () => {
-        
-    }
-
     return(
         <PopUp id='LoginPopUp' open={props.open}>
             <BasePopUpHeader closeButton={props.closeButton} onClose={props.onClose}
-            title="Login"/>
-            <div className='LoginParams'>
+            title="Log In"/>
+            <form className='LoginForm'>
                 <div className='LoginLineParams'>
-                    <label className='LoginLabel'>Username:</label>
+                    <label className='LoginLabel'>Email Adress</label>
                     <input type='text' id='LoginTextInput'
-                    maxLength={20}
-                    onChange={handleChange}/>
+                    placeholder="me@example.com"
+                    maxLength={128}
+                    onChange={(e) => {setUsername(e.target.value)}}/>
                 </div>
 
                 <div className='LoginLineParams'>
-                    <label className='LoginLabel'>Password:</label>
+                    <label className='LoginLabel'>Password</label>
                     <input type='password' id='LoginTextInput'
-                    maxLength={20}
-                    onChange={handleChange}/>
+                    placeholder="Password"
+                    maxLength={32}
+                    onChange={(e) => {setPassword(e.target.value)}}/>
                 </div>
-            </div>
-            <LoginButton idName="LoginSaveButton" innerText="Login"/>
+                
+                <div className="LoginHelp">
+                    <a className="PasswordRetrive" href="/">Forgot my Password</a>
+                    
+                </div>
+            </form>
+            <LoginButton idName="LoginSaveButton" innerText="Login"
+            emailAdress={username} password={password}/>
         </PopUp>
     );
 }

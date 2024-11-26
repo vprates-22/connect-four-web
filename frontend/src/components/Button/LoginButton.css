@@ -10,6 +10,15 @@
     width: 140px;
 }
 
+.LoginHelp{
+    width: 70%;
+
+    align-items: left;
+    text-align: left;
+
+    padding-bottom: 10px;
+}
+
 .SaveButton:hover{
     background-color: #3A6D8C;
     font-size: 20.1px;

@@ -1,18 +1,20 @@
 import './LoginButton.css'
 
-interface Credentials{
+// interface Credentials{
     
-}
+// }
 
 interface SaveButtonParams{
     idName:string;
     innerText:string;
-    credentials:
+    emailAdress:string;
+    password:string;
+    // credentials:
 }
 
 const SaveButton = (props:SaveButtonParams) => {
     const logIn = () => {
-        console.log("A_A")
+        console.log(props.password)
     }
 
     return(

@@ -6,7 +6,7 @@ import AboutPage from "./pages/Home/AboutPage";
 import WatchRoomPage from "./pages/Join/WatchRoomPage";
 import LoungeJoin from "./components/Lounges/JoinLounge";
 import CreateRoomPage from "./pages/Join/CreateRoomPage";
-import LoginPage from "./pages/Join/LoginPage";
+import LoginPage from "./pages/Login/LoginPage";
 
 function App() {
   return (
