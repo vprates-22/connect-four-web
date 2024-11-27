@@ -13,8 +13,20 @@ interface SaveButtonParams{
 }
 
 const SaveButton = (props:SaveButtonParams) => {
-    const logIn = () => {
-        console.log(props.password)
+    const logIn = async () => {
+        const test = await (await fetch("http://localhost:8000/api_auth/login",   {
+            method : "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "your-token-here",
+            },
+            body : JSON.stringify({
+                email : props.emailAdress,
+                password : props.password
+            })
+        })).json();
+
+        console.log(test);
     }
 
     return(
