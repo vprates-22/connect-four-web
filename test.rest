@@ -1,0 +1,24 @@
+POST http://localhost:8000/api_auth/signup
+Content-Type: application/json
+
+{
+    "email" : "vprates4@gmail.com", 
+    "username" : "vprates",
+    "password" : "teste"
+}
+
+###
+
+POST http://localhost:8000/api_auth/login
+Content-Type: application/json
+
+{
+    "email" : "vprates4@gmail.com", 
+    "password" : "teste"
+}
+
+###
+
+GET http://localhost:8000/api_auth/test
+Content-Type: application/json
+Authorization: Token 3bfec39e8265c0bd5e378c677f7f27b364e56623

@@ -31,9 +31,15 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'rest_framework',
+    'rest_framework.authtoken',
+    
     'daphne',
     'channels',
+
+    'authentication',
     'game',
+    'user',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -84,7 +90,14 @@ CHANNEL_LAYERS = {
     },
 }
 
+AUTH_USER_MODEL = 'user.C4User'
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ]
+}
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
