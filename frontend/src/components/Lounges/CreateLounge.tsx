@@ -1,7 +1,7 @@
 import Board from "../Game/Board";
 import GameScore from "../Game/Score";
 import RoomIdPopUp from "../PopUp/RoomIdPopUp";
-import { WSContext } from "../WSContext/CreateWsContext";
+import { WSContext } from "../Context/CreateWsContext";
 import GameFooter from "../../components/Footer/GameFooter";
 
 import { useContext, useEffect } from "react";

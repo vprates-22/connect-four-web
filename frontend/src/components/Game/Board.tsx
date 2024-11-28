@@ -1,4 +1,4 @@
-import { WSContext } from '../WSContext/CreateWsContext';
+import { WSContext } from '../Context/CreateWsContext';
 
 import { useContext } from 'react';
 

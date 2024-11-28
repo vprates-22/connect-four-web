@@ -1,4 +1,4 @@
-import WebsocketProvider from "../../components/WSContext/CreateWsContext";
+import WebsocketProvider from "../../components/Context/CreateWsContext";
 import CreateLounge from "../../components/Lounges/CreateLounge"
 
 import { useLocation, useNavigate } from "react-router-dom";

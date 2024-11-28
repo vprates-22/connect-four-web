@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import './LoginButton.css'
 
 // interface Credentials{
@@ -13,8 +14,10 @@ interface SaveButtonParams{
 }
 
 const SaveButton = (props:SaveButtonParams) => {
+    const navigate = useNavigate();
+
     const logIn = async () => {
-        const test = await (await fetch("http://localhost:8000/api_auth/login",   {
+        const response = await fetch("http://localhost:8000/api_auth/login",   {
             method : "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -24,9 +27,19 @@ const SaveButton = (props:SaveButtonParams) => {
                 email : props.emailAdress,
                 password : props.password
             })
-        })).json();
+        });
 
-        console.log(test);
+        if(response.status < 300){
+            const auth = await response.json();
+
+            localStorage.setItem('Token', auth.token);
+            localStorage.setItem('User', auth.user.username);
+            localStorage.setItem('Email', auth.user.email);
+
+            navigate('/');
+        } else {
+            console.log();
+        }
     }
 
     return(
