@@ -2,10 +2,10 @@ import { useState } from "react";
 
 import CreatePopUp from "../../components/PopUp/CreatePopUp";
 import OpenPopUpButton from "../../components/Button/OpenPopUpButton";
-import NavBar from "../../components/NavBar/NavBar";
 import WatchPopUp from "../../components/PopUp/WatchPopUp";
 
 import './HomePage.css'
+import ContextWrappedNavBar from "../../components/NavBar/ContextWrappedNavBar";
 
 
 const HomePage = () => {
@@ -14,7 +14,7 @@ const HomePage = () => {
 
     return (
         <main>
-            <NavBar/>
+            <ContextWrappedNavBar/>
             <div className={(createPopUpOpen || watchPopUpOpen) ? 'HomeDivBlur' : 'HomeDiv'}>
                 <h1 className='WelcomeMsg'>
                     Welcome

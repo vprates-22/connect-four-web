@@ -1,9 +1,10 @@
 import React, { createContext, useEffect, useState } from "react"
 
 interface Auth{
-    token:string,
-    username:string,
-    email:string,
+    token:string;
+    username:string;
+    email:string;
+    logOut:() => void;
 }
 
 interface AuthProviderParams{
@@ -26,12 +27,23 @@ const AuthProvider = ( props:AuthProviderParams ) => {
             setToken(tokenSaved);
             setEmail(emailLogedIn);
         }
-    }, []);
+    }, [email, token, token]);
+
+    const logOut = () => {
+        setUser('');
+        setToken('');
+        setEmail('');
+        
+        localStorage.removeItem('Token');
+        localStorage.removeItem('User');
+        localStorage.removeItem('Email');
+    }
 
     const value:Auth = {
         token : token,
         username : user,
         email : email,
+        logOut : logOut,
     }
 
     return (

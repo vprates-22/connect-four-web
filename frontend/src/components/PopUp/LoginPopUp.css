@@ -44,7 +44,7 @@
     align-items: center;
 }
 
-#LoginTextInput{
+.LoginTextInput{
     height: 30px;
     width: 80%;
 
@@ -58,7 +58,7 @@
     border: 2px solid aliceblue;
 }
 
-#LoginTextInput:focus{
+.LoginTextInput:focus{
     outline: none;
 }
 

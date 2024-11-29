@@ -1,11 +1,11 @@
-import NavBar from "../../components/NavBar/NavBar";
+import ContextWrappedNavBar from "../../components/NavBar/ContextWrappedNavBar";
 
 import './AboutPage.css'
 
 const AboutPage = () => {
     return (
         <main>
-            <NavBar/>
+            <ContextWrappedNavBar/>
             <div className="AboutInfo">
                 {/* <h1 className="AboutTitle">
                     Connect4

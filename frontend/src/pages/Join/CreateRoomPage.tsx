@@ -1,10 +1,10 @@
-import NavBar from "../../components/NavBar/NavBar"; 
+import ContextWrappedNavBar from "../../components/NavBar/ContextWrappedNavBar";
 import CreatePopUp from "../../components/PopUp/CreatePopUp";
 
 const CreateRoomPage = () => {
     return (
         <main>
-            <NavBar/>
+            <ContextWrappedNavBar/>
             <CreatePopUp open={true} closeButton={false} onClose={() => {}}/>
         </main>
     );
