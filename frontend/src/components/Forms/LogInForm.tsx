@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import BasicButton from "../Button/BasciButton";
+import BasicButton from "../Button/BasicButton";
+
+import { AUTH_TOKEN_KEY, USERNAME_KEY, EMAIL_KEY } from "../../constants";
 
 const LogInForm = () => {
     const [email, setEmail] = useState<string>('');
@@ -22,9 +24,9 @@ const LogInForm = () => {
             })
         }).then(response => response.json())
         .then(data => {
-            localStorage.setItem('Token', data.token);
-            localStorage.setItem('User', data.user.username);
-            localStorage.setItem('Email', data.user.email);
+            localStorage.setItem(AUTH_TOKEN_KEY, data.token);
+            localStorage.setItem(USERNAME_KEY, data.user.username);
+            localStorage.setItem(EMAIL_KEY, data.user.email);
     
             navigate('/');
         }).catch(error => {

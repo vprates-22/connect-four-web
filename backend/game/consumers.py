@@ -153,6 +153,7 @@ class PlayerBase(AsyncWebsocketConsumer):
         """
         data = json.loads(text_data)
         x = int(data['x'])
+        print(self.scope['user'])
         
         await self._get_game_state()
 
