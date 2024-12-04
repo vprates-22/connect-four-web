@@ -6,13 +6,13 @@ import './Board.css';
 
 interface BuildBoardParams {
     board:Array<Array<number>>;
-    handleClick:(colIndex:number) => void;
+    handleClick(colIndex:number):void;
 }
 
 interface BuildRowParams {
     row:Array<number>;
     rowIndex:number;
-    handleClick:(colIndex:number) => void;
+    handleClick(colIndex:number):void;
 }
 
 const BuildRow = (props:BuildRowParams) => {

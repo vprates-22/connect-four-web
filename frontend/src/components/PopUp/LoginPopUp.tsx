@@ -10,8 +10,8 @@ import { useAuth } from "../Context/AuthContext";
 interface LoginPopUpParams{
     open:boolean;
     closeButton:boolean;
-    doAfterAuth:() => void;
-    onClose:() => void;
+    doAfterAuth():void;
+    onClose():void;
 }
 
 const LoginPopUp = (props:LoginPopUpParams) => {

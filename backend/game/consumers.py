@@ -121,13 +121,13 @@ class PlayerBase(AsyncWebsocketConsumer):
         :return: None
         """        
         await self.send(text_data=json.dumps({
-            'player_one' : self.room.player_one_username,
-            'player_two' : self.room.player_two_username,
             'type' : msg_type,
             'message' : msg,
             'height' : None,
             'width' : None,
             'player' : None,
+            'player_one' : None,
+            'player_two' : None,
             'game_active' : self.room.active and self.room.started,
             'board' : None,
             'lowest_tiles': None,
@@ -149,13 +149,13 @@ class PlayerBase(AsyncWebsocketConsumer):
         :return: None
         """
         await self.send(text_data=json.dumps({
-            'player_one' : event['player_one'],
-            'player_two' : event['player_two'],
             'type' : event['msg_type'],
             'message' : event['message'],
             'height' : event['height'],
             'width' : event['width'],
             'player' : self.player,
+            'player_one' : event['player_one'],
+            'player_two' : event['player_two'],
             'game_active' : event['game_active'],
             'board' : event['board'],
             'lowest_tiles': event['lowest_tiles'],
@@ -263,13 +263,13 @@ class PlayerBase(AsyncWebsocketConsumer):
         """        
         await self.channel_layer.group_send(
             self.game_room, {'type' : 'broadcast.move',
-                            'player_one' : self.room.player_one_username,
-                            'player_two' : self.room.player_two_username,    
                             'msg_type' : msg_type,
                             'message' : message,
                             'height' : self.room.height,
                             'width' : self.room.width,
                             'player' : self.player,
+                            'player_one' : self.room.player_one_username,
+                            'player_two' : self.room.player_two_username,    
                             'game_active' : self.room.active and self.room.started,
                             'board' : self.connect4.game_board if msg_type == 'play' else None,
                             'lowest_tiles': self.connect4.lowest_tiles if msg_type == 'play' else None,                         
@@ -289,13 +289,13 @@ class PlayerBase(AsyncWebsocketConsumer):
         :return: None
         """
         await self.send(text_data=json.dumps({
-                                'player_one' : event['player_one'],
-                                'player_two' : event['player_two'],
                                 'type' : event['msg_type'],
                                 'message' : event['message'],
                                 'height' : event['height'],
                                 'width' : event['width'],
                                 'player' : event['player'],
+                                'player_one' : event['player_one'],
+                                'player_two' : event['player_two'],
                                 'game_active' : event['game_active'],
                                 'board' : event['board'],
                                 'lowest_tiles': event['lowest_tiles'],                                
@@ -325,11 +325,11 @@ class PlayerBase(AsyncWebsocketConsumer):
             await sync_to_async(self.room.save)()
 
             msg_type = 'kill'
-            message = f'Player {self.player} left the game'
+            message = f'Player {self.user.username} left the game'
 
         await self.channel_layer.group_send(
             self.game_room, {'type' : 'disconnect.message', 
-                             'player' : self.user.username, 
+                             'player' : self.player, 
                              'message' : message,
                              'msg_type' : msg_type, 
                              'game_active' : self.room.active and self.room.started}
@@ -347,13 +347,13 @@ class PlayerBase(AsyncWebsocketConsumer):
         """
         await self.send(text_data=json.dumps(
             {
-            'player_one' : event['player_one'],
-            'player_two' : event['player_two'],                
             'type' : event['msg_type'],
             'message' : event['message'],
             'height' : None,
             'width' : None,
             'player' : event['player'],
+            'player_one' : None,
+            'player_two' : None,                
             'game_active' : event['game_active'],
             'board' : None,
             'lowest_tiles': None,            
@@ -383,13 +383,13 @@ class PlayerOneConsumer(PlayerBase):
     async def _send_message_after_connection(self) -> None:
         await self.send(text_data=json.dumps(
             {
-            'player_one' : self.room.player_one_username,
-            'player_two' : self.room.player_two_username,                
             'type' : 'room-id',
             'message': self.room_id,
             'height' : self.room.height,
             'width' : self.room.width,
-            'player' : None,
+            'player' : self.player,
+            'player_one' : self.room.player_one_username,
+            'player_two' : self.room.player_two_username,                
             'game_active' : self.room.active and self.room.started,
             'board' : None,
             'lowest_tiles': None,            
@@ -512,14 +512,14 @@ class PlayerTwoConsumer(PlayerBase):
         await self.channel_layer.group_send(
             self.game_room, {'type' : 'warn.player',
                              'msg_type' : 'start',
-                             'player_one' : self.room.player_one_username,
-                             'player_two' : self.room.player_two_username,
                              'message' : self.room_id,
                              'game_active' : self.room.active and self.room.started,   
                              'board' : self.connect4.game_board,
                              'lowest_tiles': self.connect4.lowest_tiles,
                              'height' : self.room.height,
                              'width' : self.room.width,
+                             'player_one' : self.room.player_one_username,
+                             'player_two' : self.room.player_two_username,
                              'turn' : self.connect4.turn,
                              'game_won' : self.connect4.game_won,
                              'game_winner' : self.connect4.game_winner,
@@ -555,12 +555,12 @@ class ViewerConsumer(PlayerBase):
         
         await self.send(json.dumps({
                                 'type' : 'start',
-                                'player_one' : self.room.player_one_username,
-                                'player_two' : self.room.player_two_username,
                                 'message': self.room_id,
                                 'height' : self.room.height,
                                 'width' : self.room.width,
                                 'player' : self.player,
+                                'player_one' : self.room.player_one_username,
+                                'player_two' : self.room.player_two_username,
                                 'game_active' : self.room.active and self.room.started,
                                 'board' : self.connect4.game_board,
                                 'lowest_tiles': self.connect4.lowest_tiles,

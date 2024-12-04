@@ -15,17 +15,17 @@ interface CreateOptParams {
     maxVal:number;
     stepSize:number;
     defaultVal:number;
-    setValue:(val:number) => void;
+    setValue(val:number):void;
 }
 
 interface GetBoardParamsParams {
-    setHeight:(val:number)=>void;
-    setWidth:(val:number)=>void;
+    setHeight(val:number):void;
+    setWidth(val:number):void;
 }
 
 interface TimeParamsParams {
-    setTimePTurn:(val:number)=>void;
-    setTimePPlayer:(val:number)=>void;
+    setTimePTurn(val:number):void;
+    setTimePPlayer(val:number):void;
 }
 
 const CreateOptions = (props:CreateOptParams) => {

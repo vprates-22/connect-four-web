@@ -22,12 +22,12 @@ export interface Context {
 
 export interface Message {
     type:string;
-    player_one:string;
-    player_two:string;
     message:string;
     height:number;
     width:number;
     player:number;
+    player_one:string;
+    player_two:string;
     game_active:boolean;
     board:Array<Array<number>>;
     lowest_tiles:Array<number>;    
@@ -111,6 +111,7 @@ const WebsocketProvider = ( props:WebSocketContextParams ) => {
                                 setGameState(false);
                                 ws.current?.close();
                             }
+                            window.alert(data.message);
                             break;
                         case "viewer_out":
                             console.log(data.message);
@@ -121,7 +122,7 @@ const WebsocketProvider = ( props:WebSocketContextParams ) => {
                     }
                 };
             return () => { ws.current?.close() }
-            }, [gameState, navigate, props])
+            }, [])
 
     const value:Context = {
         socket : ws.current,

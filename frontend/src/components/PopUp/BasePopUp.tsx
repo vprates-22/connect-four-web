@@ -3,7 +3,7 @@ import "./BasePopUp.css";
 export interface PopUpOpenParams{
     open:boolean;
     closeButton:boolean;
-    onClose:() => void;
+    onClose():void;
 }
 
 export interface PopUpParams{

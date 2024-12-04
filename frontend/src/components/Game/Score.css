@@ -13,11 +13,6 @@
     height: 40px;
 }
 
-.UserPic{
-    height: 40px;
-    width: 40px;
-}
-
 .TurnScore{
     display: flex;
     flex-direction: row;
@@ -27,10 +22,25 @@
 }
 
 .PlayerScore{
-    color: aliceblue;
+    /* color: aliceblue; */
     font-size: 20px;
-
+    width: 250px;
+background-color: aliceblue;
     display: flex;
 
     align-items: center;
+    justify-content: center;
+}
+
+.GameScore img{
+    height: 40px;
+    width: 40px;
+}
+
+#invisibleArrow{
+    opacity: 0%;
+}
+
+#leftArrow{
+    transform: rotate(180deg);
 }

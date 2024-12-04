@@ -3,7 +3,7 @@ import './OpenPopUpButton.css'
 interface OpenPopUpButtonParams {
     idName:string;
     innerText:string;
-    setPopUpOpen:() => void;
+    setPopUpOpen():void;
 }
 
 const OpenPopUpButton = (props:OpenPopUpButtonParams) => {

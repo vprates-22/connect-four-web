@@ -3,7 +3,7 @@ import "./BasePopUpHeader.css";
 interface PopUpHeaderParam {
     closeButton:boolean;
     title:string;
-    onClose:() => void;
+    onClose():void;
 }
 
 const BasePopUpHeader = (props:PopUpHeaderParam) => {

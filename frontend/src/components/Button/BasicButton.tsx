@@ -3,7 +3,7 @@ import './BasicButton.css'
 interface BasicButtonParams{
     idName:string;
     innerText:string;
-    handleClick:() => void;
+    handleClick():void;
 }
 
 const BasicButton = (props:BasicButtonParams) => {
