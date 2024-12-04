@@ -1,6 +1,5 @@
-import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { createContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "./LoginContext";
 
 interface WebSocketContextParams {
     children:React.ReactNode;
@@ -39,10 +38,9 @@ export interface Message {
     winning_sequence:Array<Array<number>>;
 }
     
-export const WSContext = createContext<Context>();
+export const WSContext = createContext<Context>({} as Context);
 
 const WebsocketProvider = ( props:WebSocketContextParams ) => {
-    const auth = useContext(AuthContext);
     const navigate = useNavigate();
 
     const ws = useRef<WebSocket | null>(null);
@@ -58,8 +56,6 @@ const WebsocketProvider = ( props:WebSocketContextParams ) => {
     const [winningSeq, setWinningSeq] = useState<Array<Array<number>>>([]);
 
     useEffect(() => {
-            console.log(auth);
-
             ws.current = new WebSocket(props.WS_URL);
             
             ws.current.onopen = () => {};
@@ -125,7 +121,7 @@ const WebsocketProvider = ( props:WebSocketContextParams ) => {
                     }
                 };
             return () => { ws.current?.close() }
-            }, [])
+            }, [gameState, navigate, props])
 
     const value:Context = {
         socket : ws.current,

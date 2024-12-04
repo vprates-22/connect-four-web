@@ -5,7 +5,7 @@ import OpenPopUpButton from "../../components/Button/OpenPopUpButton";
 import WatchPopUp from "../../components/PopUp/WatchPopUp";
 
 import './HomePage.css'
-import ContextWrappedNavBar from "../../components/NavBar/ContextWrappedNavBar";
+import NavBar from "../../components/NavBar/NavBar";
 
 const HomePage = () => {
     const [createPopUpOpen, setCreatePopUpOpen] = useState<boolean>(false)
@@ -13,7 +13,7 @@ const HomePage = () => {
 
     return (
         <main>
-            <ContextWrappedNavBar/>
+            <NavBar/>
             <div className={(createPopUpOpen || watchPopUpOpen) ? 'HomeDivBlur' : 'HomeDiv'}>
                 <h1 className='WelcomeMsg'>
                     Welcome

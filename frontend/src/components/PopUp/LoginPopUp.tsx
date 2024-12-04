@@ -3,9 +3,9 @@ import BasePopUpHeader from "./BasePopUpHeader";
 
 import './LoginPopUp.css'
 
-import { useContext, useEffect } from "react";
-import { AuthContext } from "../Context/LoginContext";
+import { useEffect } from "react";
 import LogInForm from "../Forms/LogInForm";
+import { useAuth } from "../Context/AuthContext";
 
 interface LoginPopUpParams{
     open:boolean;
@@ -15,13 +15,13 @@ interface LoginPopUpParams{
 }
 
 const LoginPopUp = (props:LoginPopUpParams) => {
-    const auth = useContext(AuthContext);
+    const { isAuth } = useAuth();
     
     useEffect(() => {
-        if(auth.token !== null){
+        if( isAuth ){
             props.doAfterAuth();
         }
-    }, [auth, props])
+    }, [isAuth, props])
 
     return(
         <PopUp id='LoginPopUp' open={props.open}>

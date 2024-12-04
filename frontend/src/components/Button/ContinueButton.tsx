@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../Context/LoginContext';
-import { useContext } from 'react';
+import { useAuth } from '../Context/AuthContext';
 
 import './ContinueButton.css'
 
@@ -14,19 +13,13 @@ interface ContinueButtonParams{
 
 const ContinueButton = (props:ContinueButtonParams) => {
     const navigate = useNavigate();
-    const auth = useContext(AuthContext);
-    
-    const handleClick = () => {
+    const { token } = useAuth();
 
+    const handleClick = () => {
         if(!props.condition)
             return;
 
-        if(auth.token === null){
-            navigate('/login/');
-            return;
-        }
-
-        const ws_url = props.wsUrl + auth.token + '/';
+        const ws_url = props.wsUrl + token + '/';
         navigate( props.toPath, { state : { ws_url } });
     };
 

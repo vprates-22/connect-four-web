@@ -1,48 +1,29 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import BasicButton from "../Button/BasicButton";
-
-import { AUTH_TOKEN_KEY, USERNAME_KEY, EMAIL_KEY } from "../../constants";
+import { useAuth } from "../Context/AuthContext";
 
 const LogInForm = () => {
+    const { logIn } = useAuth();
+
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
 
-    const navigate = useNavigate();
-
-    const logIn = () => {
-        if(!(email && password)) return;
-        
-        fetch("http://localhost:8000/api_auth/login", {
-            method : "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body : JSON.stringify({
-                email : email,
-                password : password
-            })
-        }).then(response => response.json())
-        .then(data => {
-            localStorage.setItem(AUTH_TOKEN_KEY, data.token);
-            localStorage.setItem(USERNAME_KEY, data.user.username);
-            localStorage.setItem(EMAIL_KEY, data.user.email);
-    
-            navigate('/');
-        }).catch(error => {
-            console.log(error);
-        });
+    const submitCredentials = async () => {
+        await logIn({
+            email : email,
+            password : password
+        })
     }
 
-    const handleEnter = (e) => {
+    const handleEnter = async (e) => {
         if( e.code === "Enter" ){
-            logIn();
+            await submitCredentials();
         }
     }
 
     return (
     <>
-        <form className='LoginForm' onSubmit={logIn}>
+        <form className='LoginForm' onSubmit={submitCredentials}>
             <div className='LoginLineParams'>
                 <label className='LoginLabel'>Email Adress</label>
                 <input type='text' className='LoginTextInput'
@@ -65,7 +46,7 @@ const LogInForm = () => {
                 <a className="PasswordRetrive" href="/">Forgot my Password</a> 
             </div>
         </form>
-        <BasicButton idName="LoginSaveButton" innerText="Login" handleClick={logIn}/>    
+        <BasicButton idName="LoginSaveButton" innerText="Login" handleClick={submitCredentials}/>    
     </>
     );
 }

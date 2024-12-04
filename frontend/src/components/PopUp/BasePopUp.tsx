@@ -6,7 +6,7 @@ export interface PopUpOpenParams{
     onClose:() => void;
 }
 
-interface PopUpParams{
+export interface PopUpParams{
     id:string;
     open:boolean;
     children:React.ReactNode;

@@ -1,12 +1,11 @@
 import { useNavigate } from "react-router-dom";
 
 import "./NavBar.css";
-import { useContext } from "react";
-import { AuthContext } from "../Context/LoginContext";
+import { useAuth } from "../Context/AuthContext";
 
 const NavBar = () => {
     const navigate = useNavigate();
-    const auth = useContext(AuthContext);
+    const { isAuth, username, logOut } = useAuth();
 
     return (
         <>
@@ -19,9 +18,9 @@ const NavBar = () => {
             <a className='OptionNavBar' id='AboutNavBar' onClick={() => navigate('/about/')}>About</a>
         
             {
-                auth.username === null ?
+                isAuth ?
+                <a className='UserNavBar' id='LoginNavBar' onClick={logOut}>{username}</a> :
                 <a className='OptionNavBar' id='LoginNavBar' onClick={() => navigate('/login/')}>Log In</a>
-                : <a className='UserNavBar' id='LoginNavBar' onClick={auth.logOut}>{auth.username}</a>
             }
         </nav>
         </>

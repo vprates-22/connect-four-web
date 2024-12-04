@@ -8,7 +8,7 @@ import LoungeJoin from "./components/Lounges/JoinLounge";
 import CreateRoomPage from "./pages/Join/CreateRoomPage";
 import LoginPage from "./pages/Login/LoginPage";
 
-import AuthProvider from "./components/Context/LoginContext";
+import AuthProvider from "./components/Context/AuthContext";
 
 function App() {
   return (

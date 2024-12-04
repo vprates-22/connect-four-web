@@ -2,11 +2,21 @@ import BasePopUpHeader from "./BasePopUpHeader";
 import PopUp, { PopUpOpenParams } from "./BasePopUp";
 import ContinueButton from "../Button/ContinueButton";
 
-import { ChangeEvent, ClipboardEvent, useState } from "react";
+import { ChangeEvent, ClipboardEvent, useEffect, useState } from "react";
 
 import "./WatchPopUp.css"
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../Context/AuthContext";
 
 const WatchPopUp = (props:PopUpOpenParams) => {
+    const { isAuth } = useAuth();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if(!isAuth && props.open)
+            navigate('/login/');
+    }, [isAuth, navigate, props])
+
     const [roomId, setRoomId] = useState<string>("");
 
     const handleChange = (event:ChangeEvent<HTMLInputElement>) => {

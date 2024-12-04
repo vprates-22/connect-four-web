@@ -1,11 +1,11 @@
-import ContextWrappedNavBar from "../../components/NavBar/ContextWrappedNavBar";
+import NavBar from "../../components/NavBar/NavBar";
 
 import './AboutPage.css'
 
 const AboutPage = () => {
     return (
         <main>
-            <ContextWrappedNavBar/>
+            <NavBar/>
             <div className="AboutInfo">
                 <h3 className="AboutSubTitle">
                     How to Play
