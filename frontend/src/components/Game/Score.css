@@ -22,10 +22,10 @@
 }
 
 .PlayerScore{
-    /* color: aliceblue; */
+    color: aliceblue;
     font-size: 20px;
     width: 250px;
-background-color: aliceblue;
+
     display: flex;
 
     align-items: center;
