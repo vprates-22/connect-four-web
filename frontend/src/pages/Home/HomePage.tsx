@@ -7,7 +7,6 @@ import WatchPopUp from "../../components/PopUp/WatchPopUp";
 import './HomePage.css'
 import ContextWrappedNavBar from "../../components/NavBar/ContextWrappedNavBar";
 
-
 const HomePage = () => {
     const [createPopUpOpen, setCreatePopUpOpen] = useState<boolean>(false)
     const [watchPopUpOpen, setWatchPopUpOpen] = useState<boolean>(false)

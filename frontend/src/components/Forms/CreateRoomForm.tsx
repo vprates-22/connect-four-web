@@ -1,4 +1,4 @@
-import ContinueButton from "../Button/ContinueCreateButton.tsx";
+import ContinueButton from "../Button/ContinueButton.tsx";
 
 import { useState, ChangeEvent } from "react";
 import { 
@@ -92,7 +92,7 @@ const CreateRoomForm = () => {
     const [timePPlayer, setTimePPlayer] = useState<number>(TIME_P_PLAYER_DEFAULT);
 
     return (
-        <form className='GameParamsForm'>
+        <form className='GameParamsForm' onSubmit={() => {}}>
             <div id="GameParamsBody">
                 <GetBoardParams setHeight={setHeight} setWidth={setWidth}/>
                 <TimeParams setTimePTurn = {setTimePTurn} setTimePPlayer = {setTimePPlayer}/>

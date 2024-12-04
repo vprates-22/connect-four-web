@@ -2,8 +2,8 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from user.serializer import C4UserSerializer, C4User
 from rest_framework.authtoken.models import Token
+from user.serializer import C4UserSerializer, C4User
 
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
@@ -42,4 +42,4 @@ class Test(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        return Response({"You" : f"Are Auth {request.user.username}"})
+        return Response({"You" : f"Are Auth {request.user.email}"})

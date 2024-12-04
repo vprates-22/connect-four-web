@@ -1,9 +1,10 @@
-import React, { createContext, useEffect, useState } from "react"
+import React, { createContext, useState } from "react"
+import { AUTH_TOKEN_KEY, USERNAME_KEY, EMAIL_KEY } from "../../constants";
 
 interface Auth{
-    token:string;
-    username:string;
-    email:string;
+    token:string|null;
+    username:string|null;
+    email:string|null;
     logOut:() => void;
 }
 
@@ -14,29 +15,18 @@ interface AuthProviderParams{
 export const AuthContext = createContext<Auth>()
 
 const AuthProvider = ( props:AuthProviderParams ) => {
-    const [token, setToken] = useState<string>("");
-    const [user, setUser] = useState<string>("");
-    const [email, setEmail] = useState<string>("");
-    
-    useEffect(() => {
-        const tokenSaved = localStorage.getItem('Token');
-        const userLogedIn = localStorage.getItem('User');
-        const emailLogedIn = localStorage.getItem('Email');
-        if(userLogedIn && tokenSaved && emailLogedIn){
-            setUser(userLogedIn);
-            setToken(tokenSaved);
-            setEmail(emailLogedIn);
-        }
-    }, [email, token, token]);
+    const [token, setToken] = useState<string|null>(localStorage.getItem(AUTH_TOKEN_KEY));
+    const [user, setUser] = useState<string|null>(localStorage.getItem(USERNAME_KEY));
+    const [email, setEmail] = useState<string|null>(localStorage.getItem(EMAIL_KEY));
 
     const logOut = () => {
-        setUser('');
-        setToken('');
-        setEmail('');
+        setUser(null);
+        setToken(null);
+        setEmail(null);
         
-        localStorage.removeItem('Token');
-        localStorage.removeItem('User');
-        localStorage.removeItem('Email');
+        localStorage.removeItem(AUTH_TOKEN_KEY);
+        localStorage.removeItem(USERNAME_KEY);
+        localStorage.removeItem(EMAIL_KEY);
     }
 
     const value:Auth = {

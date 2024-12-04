@@ -19,7 +19,7 @@ const GamePage = () => {
     
     let url = "";
     if(hasState){
-        let { ws_url } = location.state as {ws_url:string};
+        const { ws_url } = location.state as {ws_url:string};
         url = ws_url;
     }   
 

@@ -5,24 +5,23 @@ import './LoginPopUp.css'
 
 import { useContext, useEffect } from "react";
 import { AuthContext } from "../Context/LoginContext";
-import { useNavigate } from "react-router-dom";
 import LogInForm from "../Forms/LogInForm";
 
 interface LoginPopUpParams{
     open:boolean;
     closeButton:boolean;
+    doAfterAuth:() => void;
     onClose:() => void;
 }
 
 const LoginPopUp = (props:LoginPopUpParams) => {
     const auth = useContext(AuthContext);
-    const navigate = useNavigate();
     
     useEffect(() => {
-        if(auth.token){
-            navigate('/');
+        if(auth.token !== null){
+            props.doAfterAuth();
         }
-    }, [auth, navigate])
+    }, [auth, props])
 
     return(
         <PopUp id='LoginPopUp' open={props.open}>

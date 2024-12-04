@@ -6,11 +6,14 @@ from .models import Rooms
 from .game import Connect4
 
 from asgiref.sync import sync_to_async
+from rest_framework.authtoken.models import Token
 from channels.generic.websocket import AsyncWebsocketConsumer
+
 
 class PlayerBase(AsyncWebsocketConsumer):
     player = None
     failed_to_connect = False
+    user = None
 
     async def connect(self)-> None:
         """
@@ -20,6 +23,7 @@ class PlayerBase(AsyncWebsocketConsumer):
 
         :return: None
         """
+        await self._handle_user_authentication()
         await self._create_variables()
 
         if self.failed_to_connect:
@@ -33,6 +37,21 @@ class PlayerBase(AsyncWebsocketConsumer):
         await self.accept()
 
         await self._send_message_after_connection()
+
+    async def _handle_user_authentication(self) -> None:
+        """
+        Function intended to authenticate the user after the connection
+
+        :param data: message received already parsed
+
+        :return: None
+        """
+        try:
+            query_result = await sync_to_async(Token.objects.select_related('user').get)(key = self.scope['url_route']['kwargs']['auth_token'])
+            self.user = query_result.user
+        except:
+            err_msg = "You do not have the credentials to continue"
+            self._send_error_message(err_msg, 'fatal_error')
 
     async def _create_variables(self) -> None:
         """
@@ -66,7 +85,6 @@ class PlayerBase(AsyncWebsocketConsumer):
         if self.room is None:
             self.message = 'Room do not exist'            
             self.failed_to_connect = True
-        self.room_id = self.room_id
 
     def _check_room_is_active(self) -> None:
         """
@@ -77,10 +95,11 @@ class PlayerBase(AsyncWebsocketConsumer):
 
         :return: None
         """
-        if not self.room.active:
-            self.message = 'Room is inactive'
-            self.failed_to_connect = True
+        if self.room.active:
             return
+        
+        self.message = 'Room is inactive'
+        self.failed_to_connect = True
 
     async def _send_message_after_connection(self) -> None:
         """
@@ -92,17 +111,17 @@ class PlayerBase(AsyncWebsocketConsumer):
         """
         pass
 
-    async def _send_error_message(self, msg:str, msgType:str='error') -> None:
+    async def _send_error_message(self, msg:str, msg_type:str='error') -> None:
         """
         Function intended to notify the user whether there was an error
 
-        :param msgType: type of the error
+        :param msg_type: type of the error
         :param msg: text explaining the error
 
         :return: None
         """        
         await self.send(text_data=json.dumps({
-            'type' : msgType,
+            'type' : msg_type,
             'message' : msg,
             'height' : None,
             'width' : None,
@@ -128,7 +147,7 @@ class PlayerBase(AsyncWebsocketConsumer):
         :return: None
         """
         await self.send(text_data=json.dumps({
-            'type' : event['msgType'],
+            'type' : event['msg_type'],
             'message' : event['message'],
             'height' : event['height'],
             'width' : event['width'],
@@ -143,17 +162,15 @@ class PlayerBase(AsyncWebsocketConsumer):
             'winning_sequence' : event.get('winning_sequence', None),
         }))
 
-    async def receive(self, text_data:str|bytes|bytearray) -> None:
+    async def _handle_play(self, data:dict) -> None:
         """
-        Function intended to deal with the message sent by the users
+        Function intended to handle a move made by a player
 
-        :param text_data: the message sent by the user
+        :param data: message received already parsed
 
         :return: None
         """
-        data = json.loads(text_data)
         x = int(data['x'])
-        print(self.scope['user'])
         
         await self._get_game_state()
 
@@ -178,6 +195,20 @@ class PlayerBase(AsyncWebsocketConsumer):
             self.room.game_over = True
 
         await self._save_game_state()
+
+    async def receive(self, text_data:str|bytes|bytearray) -> None:
+        """
+        Function intended to deal with the message sent by the users
+
+        :param text_data: the message sent by the user
+
+        :return: None
+        """
+        data = json.loads(text_data)
+
+
+        if data['type'] == 'move':
+            await self._handle_play(data)
 
     def _get_message(self, return_code:int, x:int = None) -> str:
         """
@@ -218,7 +249,7 @@ class PlayerBase(AsyncWebsocketConsumer):
         self.room.game_state = self.connect4.serialize()
         await sync_to_async(self.room.save)()
 
-    async def _send_game_message(self, x:int, message:str, msgType:str='play') -> None:
+    async def _send_game_message(self, x:int, message:str, msg_type:str='play') -> None:
         """
         Function intended to broadcast a game move to all the active players
 
@@ -229,14 +260,14 @@ class PlayerBase(AsyncWebsocketConsumer):
         """        
         await self.channel_layer.group_send(
             self.game_room, {'type' : 'broadcast.move', 
-                            'msgType' : msgType,
+                            'msg_type' : msg_type,
                             'message' : message,
                             'height' : self.room.height,
                             'width' : self.room.width,
                             'player' : self.player,
                             'game_active' : self.room.active and self.room.started,
-                            'board' : self.connect4.game_board if msgType == 'play' else None,
-                            'lowest_tiles': self.connect4.lowest_tiles if msgType == 'play' else None,                            
+                            'board' : self.connect4.game_board if msg_type == 'play' else None,
+                            'lowest_tiles': self.connect4.lowest_tiles if msg_type == 'play' else None,                         
                             'x' : x,
                             'turn' : self.connect4.turn,
                             'game_won' : self.connect4.game_won,
@@ -253,7 +284,7 @@ class PlayerBase(AsyncWebsocketConsumer):
         :return: None
         """
         await self.send(text_data=json.dumps({
-                                'type' : event['msgType'],
+                                'type' : event['msg_type'],
                                 'message' : event['message'],
                                 'height' : event['height'],
                                 'width' : event['width'],
@@ -279,19 +310,19 @@ class PlayerBase(AsyncWebsocketConsumer):
         if self.failed_to_connect:
             return
 
-        msgType = 'viewer_out'
+        msg_type = 'viewer_out'
         message = 'Viewer left the room'
 
         if self.player < 3:
             self.room.active = False
             await sync_to_async(self.room.save)()
 
-            msgType = 'kill'
+            msg_type = 'kill'
             message = f'Player {self.player} left the game'
 
         await self.channel_layer.group_send(
             self.game_room, {'type' : 'disconnect.message', 'player' : self.player, 
-                                'message' : message, 'msgType' : msgType, 
+                                'message' : message, 'msg_type' : msg_type, 
                                 'game_active' : self.room.active and self.room.started}
         )
 
@@ -307,7 +338,7 @@ class PlayerBase(AsyncWebsocketConsumer):
         """
         await self.send(text_data=json.dumps(
             {
-            'type' : event['msgType'],
+            'type' : event['msg_type'],
             'message' : event['message'],
             'height' : None,
             'width' : None,
@@ -365,25 +396,24 @@ class PlayerOneConsumer(PlayerBase):
         :return: the room key otherwise an empty string
         """
         MAX_TRIES = 10
-        attempt = 0
 
-        while attempt < MAX_TRIES:
+        for _ in range(MAX_TRIES):
             room_id = self._generate_room_id()
             room = await sync_to_async(Rooms.objects.filter)(id = room_id)
             room = await sync_to_async(room.first)()
 
-            if room is None:
-                self.room = Rooms(id = room_id,
-                                  player_one = self.channel_name,
-                                  player_two = None,
-                                  height = self.height,
-                                  width = self.width,
-                                  game_state = self.connect4.serialize())
-                        
-                await sync_to_async(self.room.save)()
-                return room_id
-            else:
-                attempt += 1
+            if room is not None:
+                continue
+
+            self.room = Rooms(id = room_id,
+                              height = self.height,
+                              width = self.width,
+                              player_one_email = self.user.email,
+                              player_one_username = self.user.username,
+                              game_state = self.connect4.serialize())
+                    
+            await sync_to_async(self.room.save)()
+            return room_id
 
         self.failed_to_connect = True
         self.message = 'Unable to generate a room'
@@ -439,9 +469,11 @@ class PlayerTwoConsumer(PlayerBase):
         
         :return: None
         """
-        if self.room.started:
-            self.message = 'Room is full'
-            self.failed_to_connect = True
+        if not self.room.started:
+            return
+        
+        self.message = 'Room is full'
+        self.failed_to_connect = True
 
     async def _update_room_data(self) -> None:
         """
@@ -451,16 +483,22 @@ class PlayerTwoConsumer(PlayerBase):
 
         :return: None
         """
+        if self.room.player_one_email == self.user.email:
+            self.failed_to_connect = True
+            self.message = "Already in the Room"
+            return
+
         self.room.active = True
         self.room.started = True
-        self.room.player_two = self.channel_name
+        self.room.player_two_email = self.user.email
+        self.room.player_two_username = self.user.username
         
         await sync_to_async(self.room.save)()
 
     async def _send_message_after_connection(self) -> None:
         await self.channel_layer.group_send(
             self.game_room, {'type' : 'warn.player',
-                             'msgType' : 'start',
+                             'msg_type' : 'start',
                              'message' : self.room_id,
                              'game_active' : self.room.active and self.room.started,   
                              'board' : self.connect4.game_board,
@@ -491,7 +529,7 @@ class ViewerConsumer(PlayerBase):
     async def _send_message_after_connection(self) -> None:
         await self.channel_layer.group_send(
             self.game_room, {'type' : 'warn.player',
-                             'msgType' : 'viewer_join',
+                             'msg_type' : 'viewer_join',
                              'message' : 'A new viewer has joined the room',
                              'game_active' : self.room.active and self.room.started,
                              'board' : None,
@@ -529,7 +567,7 @@ class ViewerConsumer(PlayerBase):
             await self._send_error_message(message)
             return
 
-        await self._send_game_message(x, message, msgType='viewer_tip')
+        await self._send_game_message(x, message, msg_type='viewer_tip')
 
     def _get_message(self, return_code:int, x:int = None) -> str:
         return {

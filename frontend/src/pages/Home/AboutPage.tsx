@@ -7,9 +7,6 @@ const AboutPage = () => {
         <main>
             <ContextWrappedNavBar/>
             <div className="AboutInfo">
-                {/* <h1 className="AboutTitle">
-                    Connect4
-                </h1> */}
                 <h3 className="AboutSubTitle">
                     How to Play
                 </h3>

@@ -1,6 +1,6 @@
 import BasePopUpHeader from "./BasePopUpHeader";
 import PopUp, { PopUpOpenParams } from "./BasePopUp";
-import ContinueButton from "../Button/ContinueCreateButton";
+import ContinueButton from "../Button/ContinueButton";
 
 import { ChangeEvent, ClipboardEvent, useState } from "react";
 

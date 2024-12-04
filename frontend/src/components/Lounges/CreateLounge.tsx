@@ -28,8 +28,10 @@ const CreateLounge = () => {
                 {console.log(context)}
                 {context.gameWinner == 0 ?
                 "" 
-                :<GameResultLine resultText={context.gameWinner === context.player ? 
-                    "You Won!" : "You Lost!"}/>
+                :<GameResultLine resultText={
+                    context.gameWinner === context.player ? 
+                    "You Won!" : 
+                    "You Lost!"}/>
                 }
                 <GameScore/>
                 <Board/>            

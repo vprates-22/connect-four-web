@@ -19,7 +19,7 @@ const NavBar = () => {
             <a className='OptionNavBar' id='AboutNavBar' onClick={() => navigate('/about/')}>About</a>
         
             {
-                auth.username == '' ?
+                auth.username === null ?
                 <a className='OptionNavBar' id='LoginNavBar' onClick={() => navigate('/login/')}>Log In</a>
                 : <a className='UserNavBar' id='LoginNavBar' onClick={auth.logOut}>{auth.username}</a>
             }
