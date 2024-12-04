@@ -10,7 +10,7 @@ const GameScore = () => {
         <>
         <div className="GameScore">
             <div className='PlayerScore'>
-                Player One
+                {context.playerOne}
                 <img className='UserPic' src="/User.png"/>
             </div>
 
@@ -26,7 +26,7 @@ const GameScore = () => {
 
             <div className='PlayerScore'>
                 <img className='UserPic' src="/User.png"/>
-                Player Two
+                {context.playerTwo}
             </div>
         </div>
         </>

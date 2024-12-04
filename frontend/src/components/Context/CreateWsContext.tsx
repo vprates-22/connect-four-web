@@ -10,6 +10,8 @@ interface WebSocketContextParams {
 export interface Context {
     socket:WebSocket|null;
     player:number;
+    playerOne:string;
+    playerTwo:string;
     gameWinner:number;
     board:Array<Array<number>>;
     gameState:boolean;
@@ -21,6 +23,8 @@ export interface Context {
 
 export interface Message {
     type:string;
+    player_one:string;
+    player_two:string;
     message:string;
     height:number;
     width:number;
@@ -44,6 +48,8 @@ const WebsocketProvider = ( props:WebSocketContextParams ) => {
     const ws = useRef<WebSocket | null>(null);
     const [turn, setTurn] = useState<number>(1);
     const [player, setPlayer] = useState<number>(0);
+    const [playerOne, setPlayerOne] = useState<string>('');
+    const [playerTwo, setPlayerTwo] = useState<string>('');
     const [winner, setWinner] = useState<number>(0);
     const [roomId, setRoomId] = useState<string>("");
     const [gameState, setGameState] = useState<boolean>(false);
@@ -69,6 +75,9 @@ const WebsocketProvider = ( props:WebSocketContextParams ) => {
                             break;
                         case "start":
                             setRoomId(data.message);
+
+                            setPlayerOne(data.player_one);
+                            setPlayerTwo(data.player_two);
 
                             setPlayer(data.player);
 
@@ -121,6 +130,8 @@ const WebsocketProvider = ( props:WebSocketContextParams ) => {
     const value:Context = {
         socket : ws.current,
         player : player,
+        playerOne : playerOne,
+        playerTwo : playerTwo,
         gameWinner : winner,
         board : board,
         lowestTiles : lowestTiles,
