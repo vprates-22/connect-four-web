@@ -2,17 +2,15 @@ import BasePopUp from "./BasePopUp";
 import CopyLine from "../Lines/CopyLine";
 import ExitButton from "../Button/ExitButton";
 import BasePopUpHeader from "./BasePopUpHeader";
-import { WSContext } from "../Context/CreateWsContext";
-
-import { useContext } from "react";
+import { useWebsocket } from "../Context/CreateWsContext";
 
 import './RoomIdPopUp.css'
 
 const RoomIdPopUp = () => {
-    const context = useContext(WSContext);
+    const { roomId } = useWebsocket();
 
     const host = window.location.host;
-    const path = `${host}/join/${context.roomId}/`;
+    const path = `${host}/join/${roomId}/`;
 
     return(
         <BasePopUp open={true} id="RoomIdPopUp">

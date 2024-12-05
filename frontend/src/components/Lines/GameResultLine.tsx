@@ -10,6 +10,6 @@ const GameResultLine = (props:GameResultLineParams) => {
         {props.resultText}
     </div>
     );
-};
+}
 
 export default GameResultLine;

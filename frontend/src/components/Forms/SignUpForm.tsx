@@ -1,18 +1,20 @@
-import { useState } from "react";
-import BasicButton from "../Button/BasicButton";
-import { useAuth } from "../Context/AuthContext";
 
-import './AuthForms.css';
+import { useState } from 'react';
+import BasicButton from '../Button/BasicButton';
+import { useAuth } from '../Context/AuthContext';
+import './AuthForms.css'
 
-const LogInForm = () => {
-    const { logIn } = useAuth();
+const SignUpForm = () => {
+    const { signUp } = useAuth();
 
     const [email, setEmail] = useState<string>('');
+    const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
 
     const submitCredentials = async () => {
-        await logIn({
+        await signUp({
             email : email,
+            username : username,
             password : password
         })
     }
@@ -36,6 +38,15 @@ const LogInForm = () => {
             </div>
 
             <div className='LoginLineParams'>
+                <label className='LoginLabel'>Username</label>
+                <input type='text' className='LoginTextInput'
+                placeholder="MyUserName"
+                maxLength={32}
+                onChange={(e) => {setUsername(e.target.value)}}
+                onKeyDown={handleEnter}/>
+            </div>
+
+            <div className='LoginLineParams'>
                 <label className='LoginLabel'>Password</label>
                 <input type='password' className='LoginTextInput'
                 placeholder="Password"
@@ -43,14 +54,10 @@ const LogInForm = () => {
                 onChange={(e) => {setPassword(e.target.value)}}
                 onKeyDown={handleEnter}/>
             </div>
-            
-            {/* <div className="LoginHelp">
-                <a className="PasswordRetrive" href="/">Forgot my Password</a> 
-            </div> */}
         </form>
-        <BasicButton idName="LoginSaveButton" innerText="Log In" handleClick={submitCredentials}/>    
+        <BasicButton idName="LoginSaveButton" innerText="Sign Up" handleClick={submitCredentials}/>    
     </>
     );
 }
 
-export default LogInForm;
+export default SignUpForm;

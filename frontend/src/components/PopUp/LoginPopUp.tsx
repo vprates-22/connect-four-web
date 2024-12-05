@@ -1,11 +1,12 @@
 import PopUp from "./BasePopUp";
-import BasePopUpHeader from "./BasePopUpHeader";
 
 import './LoginPopUp.css'
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import LogInForm from "../Forms/LogInForm";
 import { useAuth } from "../Context/AuthContext";
+import SwitchPopUpHeader from "./SwitchPopUpHeader";
+import SignUpForm from "../Forms/SignUpForm";
 
 interface LoginPopUpParams{
     open:boolean;
@@ -16,18 +17,22 @@ interface LoginPopUpParams{
 
 const LoginPopUp = (props:LoginPopUpParams) => {
     const { isAuth } = useAuth();
+    const [loginSelected, setLogInSelected] = useState<boolean>(true);
     
     useEffect(() => {
         if( isAuth ){
             props.doAfterAuth();
         }
-    }, [isAuth, props])
+    }, [isAuth, props]);
 
     return(
         <PopUp id='LoginPopUp' open={props.open}>
-            <BasePopUpHeader closeButton={props.closeButton} onClose={props.onClose}
-            title="Log In"/>
-            <LogInForm/>
+            <SwitchPopUpHeader logInSelected={loginSelected} setLogInSelected={setLogInSelected}/>
+            {
+                loginSelected ?
+                <LogInForm/> :
+                <SignUpForm/>
+            }
         </PopUp>
     );
 }

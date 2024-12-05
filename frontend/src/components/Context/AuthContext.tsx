@@ -2,12 +2,24 @@ import React, { createContext, useContext, useState } from "react"
 import { AUTH_TOKEN_KEY, USERNAME_KEY, EMAIL_KEY } from "../../constants";
 import { useNavigate } from "react-router-dom";
 
+interface SignUpData{
+    email:string;
+    username:string;
+    password:string;
+}
+
+interface LogInData{
+    email:string;
+    password:string;
+}
+
 interface Auth{
     isAuth:boolean;
     token:string|null;
     username:string|null;
     email:string|null;
-    logIn(loginData:{email:string, password:string}):Promise<void>;
+    signUp(signupData:SignUpData):Promise<void>;
+    logIn(loginData:LogInData):Promise<void>;
     logOut(): void;
 }
 
@@ -25,30 +37,47 @@ const AuthProvider = ( props:AuthProviderParams ) => {
 
     const navigate = useNavigate();
 
-    const logIn = async (loginData:{email:string, password:string}) => {
-        if(!(loginData.email && loginData.password)) return;
-        
-        fetch("http://localhost:8000/api_auth/login", {
+    const authRequest = (data:LogInData|SignUpData, apiUrl:string) => {
+        if(Object.values(data).some(x => x === null || x === '')) return;
+            
+        fetch(apiUrl, {
             method : "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body : JSON.stringify(loginData)
-        }).then(response => response.json())
-        .then(data => {
-            setToken(data.token);
-            setUser(data.user.username);
-            setEmail(data.user.email);
-            setIsAuth(true);
-
-            localStorage.setItem(AUTH_TOKEN_KEY, data.token);
-            localStorage.setItem(USERNAME_KEY, data.user.username);
-            localStorage.setItem(EMAIL_KEY, data.user.email);
-    
-            navigate('/');
+            body : JSON.stringify(data)
+        }).then(response => {
+            if(response.ok){
+                response.json().then(
+                    data => {
+                        setToken(data.token);
+                        setUser(data.user.username);
+                        setEmail(data.user.email);
+                        setIsAuth(true);
+        
+                        localStorage.setItem(AUTH_TOKEN_KEY, data.token);
+                        localStorage.setItem(USERNAME_KEY, data.user.username);
+                        localStorage.setItem(EMAIL_KEY, data.user.email);
+                
+                        navigate('/');
+                    }
+                )
+            } else {
+                window.alert("Wrong credentials");
+            }
         }).catch(error => {
             console.log(error);
         });
+    }
+
+    const signUp = async (signupData:SignUpData) => {
+        const apiUrl = "http://localhost:8000/api_auth/signup";
+        authRequest(signupData, apiUrl);
+    }
+
+    const logIn = async (loginData:LogInData) => {
+        const apiUrl = "http://localhost:8000/api_auth/login";
+        authRequest(loginData, apiUrl);
     }
 
     const logOut = () => {
@@ -67,6 +96,7 @@ const AuthProvider = ( props:AuthProviderParams ) => {
         token : token,
         username : user,
         email : email,
+        signUp : signUp,
         logIn : logIn,
         logOut : logOut,
     }

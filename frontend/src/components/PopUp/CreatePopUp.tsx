@@ -14,15 +14,16 @@ const CreatePopUp = (props:PopUpOpenParams) => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if(!isAuth && props.open)
+        if(!isAuth && props.open){
             navigate('/login/');
-    }, [isAuth, navigate, props])
+        }
+    }, [isAuth, navigate, props]);
 
     document.addEventListener('keyup', (e) => {
         if(e.code === 'Escape'){
             props.onClose();
         }
-    })
+    });
     
     return (
     <PopUp id='CreatePopUp' open={props.open}>

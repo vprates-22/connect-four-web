@@ -41,7 +41,7 @@ const AboutPage = () => {
                 Science at UFMG. Throughout my academic journey, I have developed a solid 
                 foundation in both the theory and practice of computing, and I am constantly 
                 seeking to apply my knowledge to real-world challenges. I am interning at IN3 
-                Intelligence of the Market, where I have the opportunity to work on system 
+                Inteligencia de Mercado, where I have the opportunity to work on system 
                 development projects, focusing mainly on data extraction and processing.
                 </p>
                 <p className="AboutText">

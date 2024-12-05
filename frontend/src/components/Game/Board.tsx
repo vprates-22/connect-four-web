@@ -1,6 +1,4 @@
-import { WSContext } from '../Context/CreateWsContext';
-
-import { useContext } from 'react';
+import { useWebsocket } from '../Context/CreateWsContext';
 
 import './Board.css';
 
@@ -16,13 +14,13 @@ interface BuildRowParams {
 }
 
 const BuildRow = (props:BuildRowParams) => {
-    const context = useContext(WSContext);
+    const { winningSeq } = useWebsocket();
     return(
         <div className='BoardRow'>
             {
                 props.row.map((tile, colIndex) => {
                     const actualPosition = [props.rowIndex, colIndex]
-                    const isWinningSeq = context.winningSeq.some(a => actualPosition.every((v, i) => v === a[i]));
+                    const isWinningSeq = winningSeq.some(a => actualPosition.every((v, i) => v === a[i]));
                     const content = isWinningSeq? '★' : '';
                     switch(tile){
                         case 0:
@@ -57,13 +55,13 @@ const BuildBoard = (props:BuildBoardParams) => {
 }
 
 const Board = () => {
-    const context = useContext(WSContext);
+    const { lowestTiles, socket, board } = useWebsocket();
 
     const handleClick = (colIndex:number) => {
-        if(context.lowestTiles[colIndex] === -1){
+        if(lowestTiles[colIndex] === -1){
             return;
         }
-        context.socket?.send(
+        socket?.send(
             JSON.stringify(
                 {
                     type : 'move',
@@ -83,7 +81,7 @@ const Board = () => {
 
     return(
         <div className='GameBoard'>
-            <BuildBoard board={context.board} handleClick={handleClick}/>
+            <BuildBoard board={board} handleClick={handleClick}/>
         </div>
     );
 }

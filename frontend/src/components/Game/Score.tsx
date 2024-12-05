@@ -1,19 +1,18 @@
-import { useContext } from 'react';
-import { WSContext } from '../Context/CreateWsContext';
+import { useWebsocket } from '../Context/CreateWsContext';
 
 import './Score.css'
 
 const GameScore = () => {
-    const context = useContext(WSContext);
-    const playerTwoTurn = context.turn % 2 == 0;
+    const { turn, player, playerOne, playerTwo } = useWebsocket();
+    const playerTwoTurn = turn % 2 == 0;
 
     return (
         <>
         <div className="GameScore">
             <div className='PlayerScore'>
-                {context.player == 1 ?
-                "(You) " + context.playerOne 
-                : context.playerOne
+                {player == 1 ?
+                "(You) " + playerOne 
+                : playerOne
                 } 
                 <img className='UserPic' src="/User.png"/>
             </div>
@@ -21,7 +20,7 @@ const GameScore = () => {
             <div className='TurnScore'>   
                 <img id = {playerTwoTurn ? 'invisibleArrow' : 'leftArrow'} src='/Arrow.png'></img>
                 <div className='divider'></div>
-                Turn {context.turn}
+                Turn {turn}
                 <div className='divider'></div>
                 <img id = {playerTwoTurn ?  'rightArrow' : 'invisibleArrow'} src='/Arrow.png'></img>
 
@@ -29,9 +28,9 @@ const GameScore = () => {
 
             <div className='PlayerScore'>
                 <img className='UserPic' src="/User.png"/>
-                {context.player == 1 ?
-                context.playerTwo : 
-                context.playerTwo + " (You)"}
+                {player == 1 ?
+                playerTwo : 
+                playerTwo + " (You)"}
             </div>
         </div>
         </>

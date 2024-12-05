@@ -1,4 +1,4 @@
-import { createContext, useEffect, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 interface WebSocketContextParams {
@@ -143,6 +143,11 @@ const WebsocketProvider = ( props:WebSocketContextParams ) => {
             {props.children}
         </WSContext.Provider>
     );
+}
+
+export const useWebsocket = () => {
+    const context = useContext(WSContext);
+    return context;
 }
 
 export default WebsocketProvider;

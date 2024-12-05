@@ -15,7 +15,7 @@ const WatchPopUp = (props:PopUpOpenParams) => {
     useEffect(() => {
         if(!isAuth && props.open)
             navigate('/login/');
-    }, [isAuth, navigate, props])
+    }, [isAuth, navigate, props]);
 
     const [roomId, setRoomId] = useState<string>("");
 
@@ -33,7 +33,7 @@ const WatchPopUp = (props:PopUpOpenParams) => {
         if(e.code === 'Escape'){
             props.onClose();
         }
-    })
+    });
 
     return (
         <>
