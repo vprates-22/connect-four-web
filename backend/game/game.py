@@ -14,7 +14,7 @@ class Board:
         if state is None:
             self.board = np.zeros((height, width), dtype=int)
 
-            self.heigth = height
+            self.height = height
             self.width = width
 
             self._winning_sequence = []
@@ -44,7 +44,7 @@ class Board:
         """
         for i in range(-3, 1):
             if not (x + i >= 0 and x + i + 3 < self.width
-                and y + i >= 0 and y + i + 3 < self.heigth):
+                and y + i >= 0 and y + i + 3 < self.height):
                 
                 continue
 
@@ -68,7 +68,7 @@ class Board:
         :return: whether there is four pieces aligned
         """
         for i in range(0, 4):
-            if not (y - i >= 0 and y - i + 3 < self.heigth
+            if not (y - i >= 0 and y - i + 3 < self.height
                 and x + i - 3 >= 0 and x + i < self.width):
                 
                 continue

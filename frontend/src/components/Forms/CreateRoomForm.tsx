@@ -2,9 +2,9 @@ import ContinueButton from "../Button/ContinueButton.tsx";
 
 import { useState, ChangeEvent } from "react";
 import { 
-    HEIGTH_DEFAULT, WIDTH_DEFAULT, TIME_P_PLAYER_DEFAULT, TIME_P_TURN_DEFAULT,
-    MIN_HEIGTH,     MIN_WIDTH,     MIN_TIME_P_PLAYER,     MIN_TIME_P_TURN,
-    MAX_HEIGTH,     MAX_WIDTH,     MAX_TIME_P_PLAYER,     MAX_TIME_P_TURN
+    HEIGHT_DEFAULT, WIDTH_DEFAULT, TIME_P_PLAYER_DEFAULT, TIME_P_TURN_DEFAULT,
+    MIN_HEIGHT,     MIN_WIDTH,     MIN_TIME_P_PLAYER,     MIN_TIME_P_TURN,
+    MAX_HEIGHT,     MAX_WIDTH,     MAX_TIME_P_PLAYER,     MAX_TIME_P_TURN
 } from "../../constants";
 
 import "./CreateRoomForm.css";
@@ -55,8 +55,8 @@ const GetBoardParams = (props:GetBoardParamsParams) => {
         <h3 className='SubTitle'>Board Shape</h3>
         <div className='Params'>
             <label>Height...........................................</label> 
-            <CreateOptions {...{idName:'Height', minVal:MIN_HEIGTH, maxVal:MAX_HEIGTH,
-                                stepSize:1, defaultVal:HEIGTH_DEFAULT, setValue:props.setHeight}}/>
+            <CreateOptions {...{idName:'Height', minVal:MIN_HEIGHT, maxVal:MAX_HEIGHT,
+                                stepSize:1, defaultVal:HEIGHT_DEFAULT, setValue:props.setHeight}}/>
         </div>
         <div className='Params'>
             <label>Width............................................</label> 
@@ -86,7 +86,7 @@ const TimeParams = (props:TimeParamsParams) => {
 }
 
 const CreateRoomForm = () => {
-    const [height, setHeight] = useState<number>(HEIGTH_DEFAULT);
+    const [height, setHeight] = useState<number>(HEIGHT_DEFAULT);
     const [width, setWidth] = useState<number>(WIDTH_DEFAULT);
     const [timePTurn, setTimePTurn] = useState<number>(TIME_P_TURN_DEFAULT);
     const [timePPlayer, setTimePPlayer] = useState<number>(TIME_P_PLAYER_DEFAULT);
