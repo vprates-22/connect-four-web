@@ -4,6 +4,7 @@ import random
 
 from .models import Rooms
 from .game import Connect4
+from .game_bot import get_best_play, AI
 
 from asgiref.sync import sync_to_async
 from rest_framework.authtoken.models import Token
@@ -32,7 +33,8 @@ class PlayerBase(AsyncWebsocketConsumer):
             await self.close()
             return
 
-        await self.channel_layer.group_add(self.game_room, self.channel_name)
+        if self.game_room:
+            await self.channel_layer.group_add(self.game_room, self.channel_name)
 
         await self.accept()
 
@@ -225,7 +227,7 @@ class PlayerBase(AsyncWebsocketConsumer):
         return {
             -2 :  'Invalid move',
             -1 :  'Wrong turn',
-             0 : f'Player {self.player} : {x}',
+             0 : f'{self.user.username} : {x}',
              1 : f'Player {self.connect4.game_winner} WON',
              2 :  'Its a draw'
         }[return_code]
@@ -592,3 +594,105 @@ class ViewerConsumer(PlayerBase):
             -1 :  'Wrong turn',
              0 : f'Viewer suggested you to play : {x}'
         }.get(return_code, '')
+    
+class SinglePlayerConsumer(PlayerOneConsumer):
+    player = 1
+
+    async def _create_variables(self) -> None:
+        self.room:Rooms
+
+        self.difficulty = int(self.scope['url_route']['kwargs']['difficulty'])
+        self.height = int(self.scope['url_route']['kwargs']['height'])
+        self.width = int(self.scope['url_route']['kwargs']['width'])
+        self.connect4 = Connect4(self.height, self.width)
+        
+        self.room_id = await self._create_room()
+        self.game_room = None
+
+        self.room.active = True
+        self.room.started = True
+        await sync_to_async(self.room.save)()
+
+    async def _send_message_after_connection(self) -> None:
+        await self.warn_player({
+            'type' : 'start',
+            'message' : self.room_id,
+            'game_active' : self.room.active and self.room.started,   
+            'board' : self.connect4.game_board,
+            'lowest_tiles': self.connect4.lowest_tiles,
+            'height' : self.room.height,
+            'width' : self.room.width,
+            'player_one' : self.room.player_one_username,
+            'player_two' : None,
+            'turn' : self.connect4.turn,
+            'game_won' : self.connect4.game_won,
+            'game_winner' : self.connect4.game_winner,
+            'winning_sequence' : self.connect4.winning_sequence,             
+        })
+
+    async def _send_game_message(self, x, player, message):
+        await self.send({
+                'type' : 'play',
+                'message' : message,
+                'height' : self.room.height,
+                'width' : self.room.width,
+                'player' : player,
+                'player_one' : self.room.player_one_username,
+                'player_two' : None,    
+                'game_active' : self.room.active and self.room.started,
+                'board' : self.connect4.game_board,
+                'lowest_tiles': self.connect4.lowest_tiles,
+                'x' : x,
+                'turn' : self.connect4.turn,
+                'game_won' : self.connect4.game_won,
+                'game_winner' : self.connect4.game_winner,
+                'winning_sequence' : self.connect4.winning_sequence,
+                })
+
+    async def _do_bot_move(self) -> None:
+        x_bot = get_best_play(self.connect4, self.difficulty)
+
+        bot_play_return_code = self.connect4.make_play(x_bot, AI)
+
+        message = self._get_message(bot_play_return_code, x_bot)
+        await self._send_game_message(x_bot, AI, message)
+
+        if bot_play_return_code > 0:
+            self.room.game_over = True
+
+    async def _handle_play(self, data:dict):
+        x = int(data['x'])
+
+        if self.room.game_over:
+            await self._send_error_message('Game already over')
+            return
+
+        play_return_code = self.connect4.make_play(x, self.player)
+
+        message = self._get_message(play_return_code, x)
+        if play_return_code < 0:
+            await self._send_error_message(message)
+            return
+
+        await self._send_game_message(x, self.player, message)
+
+        if play_return_code > 0:
+            self.room.game_over = True
+        else:
+            self._do_bot_move()
+
+        await self._save_game_state()
+
+    async def disconnect(self, close_code):
+        if self.failed_to_connect:
+            return
+
+        msg_type = 'viewer_out'
+        message = 'Viewer left the room'
+
+        await self.disconnect_message({
+                             'player' : self.player, 
+                             'message' : message,
+                             'msg_type' : msg_type, 
+                             'game_active' : self.room.active and self.room.started
+                             })

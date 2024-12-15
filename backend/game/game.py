@@ -170,7 +170,6 @@ class Board:
         :return: None
         """
         self.board = self.board.tolist()
-
 class Connect4:
     def __init__(self, height:int = None, width:int = None, state:dict = None) -> None:
         """
