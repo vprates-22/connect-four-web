@@ -111,12 +111,14 @@ class Board:
         
         :return: whether there is four pieces aligned
         """
-        horizontal = self.board[y, x-3:x+4]
+        first_x = x-3 if x >= 3 else 0
+
+        horizontal = self.board[y, first_x:x+4]
         horizontal = horizontal == self.board[y, x]
 
         for i in range(horizontal.shape[0] - 3):
             if np.all(horizontal[i:i+4]):
-                self._winning_sequence = [(y, x - 3 + i + j) for j in range(4)]
+                self._winning_sequence = [(y, first_x + i + j) for j in range(4)]
                 return True
         
         return False

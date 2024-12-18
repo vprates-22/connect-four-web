@@ -9,6 +9,7 @@ import CreateRoomPage from "./pages/Join/CreateRoomPage";
 import LoginPage from "./pages/Login/LoginPage";
 
 import AuthProvider from "./components/Context/AuthContext";
+import SinglePlayerPage from "./pages/Join/SinglePlayerPage";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
       <Routes>
         <Route path='/' element={<HomePage/>}></Route>
         <Route path='/create+room/' element={<CreateRoomPage/>}></Route>
+        <Route path='/single+player/' element={<SinglePlayerPage/>}></Route>
         <Route path='/watch+room/' element={<WatchRoomPage/>}></Route>
         <Route path='/about/' element={<AboutPage/>}></Route>
         <Route path='/play/' element={<GamePage/>}></Route>

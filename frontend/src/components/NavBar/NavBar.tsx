@@ -13,7 +13,8 @@ const NavBar = () => {
             <a className='HomeNavBar' id='HomeNavBar' onClick={() => navigate('/')}>
                 <img id='HomeImg' src='/HomeLogo.png'></img>
             </a>
-            <a className='OptionNavBar' id='PlayNavBar' onClick={() => navigate('/create+room/')}>Play</a>
+            <a className='OptionNavBar' id='PlaySinglePlayerNavBar' onClick={() => navigate('/single+player/')}>Play Alone</a>
+            <a className='OptionNavBar' id='PlayMultiPlayerNavBar' onClick={() => navigate('/create+room/')}>Play w/ Friend</a>
             <a className='OptionNavBar' id='WatchNavBar' onClick={() => navigate('/watch+room/')}>Watch</a>
             <a className='OptionNavBar' id='AboutNavBar' onClick={() => navigate('/about/')}>About</a>
         

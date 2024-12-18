@@ -1,0 +1,10 @@
+#SinglePlayerPopUp{
+    left: 50%;
+    top: 50%;
+    
+    margin-left: -225px;
+    margin-top: -250px;
+
+    width: 450px;
+    height: 500px;
+}

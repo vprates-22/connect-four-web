@@ -1,13 +1,14 @@
 import BasePopUpHeader from "./BasePopUpHeader.tsx";
 import PopUp, { PopUpOpenParams } from "./BasePopUp.tsx";
+import SinglePlayerForm from "../Forms/SinglePlayerForm.tsx";
 
-import "./CreatePopUp.css"
-import CreateRoomForm from "../Forms/CreateRoomForm.tsx";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../Context/AuthContext.tsx";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
-const CreatePopUp = (props:PopUpOpenParams) => {
+import './SinglePlayerPopUp.css'
+
+const SinglePlayerPopUp = ( props:PopUpOpenParams ) => {
     const { isAuth } = useAuth();
     const navigate = useNavigate();
 
@@ -22,13 +23,13 @@ const CreatePopUp = (props:PopUpOpenParams) => {
             props.onClose();
         }
     });
-    
+
     return (
-    <PopUp id='CreatePopUp' open={props.open}>
-        <BasePopUpHeader title='Multiplayer' closeButton={props.closeButton} onClose={props.onClose}/>
-        <CreateRoomForm/>
-    </PopUp>
+        <PopUp id='SinglePlayerPopUp' open={props.open}>
+            <BasePopUpHeader title='Singleplayer' closeButton={props.closeButton} onClose={props.onClose}/>
+            <SinglePlayerForm/>
+        </PopUp>
     );
 }
 
-export default CreatePopUp;
+export default SinglePlayerPopUp;

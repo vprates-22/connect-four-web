@@ -614,8 +614,10 @@ class SinglePlayerConsumer(PlayerOneConsumer):
         await sync_to_async(self.room.save)()
 
     async def _send_message_after_connection(self) -> None:
+        await self._get_game_state()
+
         await self.warn_player({
-            'type' : 'start',
+            'msg_type' : 'start',
             'message' : self.room_id,
             'game_active' : self.room.active and self.room.started,   
             'board' : self.connect4.game_board,
@@ -631,7 +633,7 @@ class SinglePlayerConsumer(PlayerOneConsumer):
         })
 
     async def _send_game_message(self, x, player, message):
-        await self.send({
+        await self.send(text_data=json.dumps({
                 'type' : 'play',
                 'message' : message,
                 'height' : self.room.height,
@@ -647,7 +649,7 @@ class SinglePlayerConsumer(PlayerOneConsumer):
                 'game_won' : self.connect4.game_won,
                 'game_winner' : self.connect4.game_winner,
                 'winning_sequence' : self.connect4.winning_sequence,
-                })
+                }))
 
     async def _do_bot_move(self) -> None:
         x_bot = get_best_play(self.connect4, self.difficulty)
@@ -662,6 +664,8 @@ class SinglePlayerConsumer(PlayerOneConsumer):
 
     async def _handle_play(self, data:dict):
         x = int(data['x'])
+
+        await self._get_game_state()
 
         if self.room.game_over:
             await self._send_error_message('Game already over')
@@ -679,7 +683,7 @@ class SinglePlayerConsumer(PlayerOneConsumer):
         if play_return_code > 0:
             self.room.game_over = True
         else:
-            self._do_bot_move()
+            await self._do_bot_move()
 
         await self._save_game_state()
 
