@@ -21,7 +21,9 @@
     text-decoration: none;
     color: #001F3F;
     
-    width: 150px;
+    width: auto;
+    padding-left: 10px;
+    padding-right: 10px;
 
     text-align: center;
     float: left;

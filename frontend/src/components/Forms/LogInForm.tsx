@@ -25,7 +25,7 @@ const LogInForm = () => {
 
     return (
     <>
-        <form className='LoginForm' onSubmit={submitCredentials}>
+        <div className='LoginForm' onSubmit={submitCredentials}>
             <div className='LoginLineParams'>
                 <label className='LoginLabel'>Email Adress</label>
                 <input type='text' className='LoginTextInput'
@@ -47,7 +47,7 @@ const LogInForm = () => {
             {/* <div className="LoginHelp">
                 <a className="PasswordRetrive" href="/">Forgot my Password</a> 
             </div> */}
-        </form>
+        </div>
         <BasicButton idName="LoginSaveButton" innerText="Log In" handleClick={submitCredentials}/>    
     </>
     );

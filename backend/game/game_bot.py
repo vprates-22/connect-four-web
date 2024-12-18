@@ -15,17 +15,23 @@ def eval_window(window:list) -> int:
 
     :return: a value calculated by the heuristic function for the received window
     """
-    last_tile = window[0]
-    val = 0
-    for tile in window[1:]:
-        if tile == AI and (last_tile == tile or last_tile == 0):
-            val += 20
+    empty_count = window.count(EMPTY)
+    ai_count = window.count(AI)
+    player_count = window.count(PLAYER)
 
-        elif tile == PLAYER:
-            val -= 10
+    if ai_count == 3 and empty_count == 1:
+        return 10
+    elif ai_count == 2 and empty_count == 2:
+        return 5
+    elif ai_count == 1 and empty_count == 3:
+        return 1
 
-        last_tile = tile
-    return val
+    elif player_count == 3 and empty_count == 1:
+        return -20
+    elif player_count == 2 and empty_count == 2:
+        return -4
+    
+    return 0
 
 def eval_game(game:Connect4) -> int:
     """

@@ -88,6 +88,16 @@ class PlayerBase(AsyncWebsocketConsumer):
             self.message = 'Room do not exist'            
             self.failed_to_connect = True
 
+    def _check_room_is_multiplayer(self) -> None:
+        """
+        
+        """
+        if self.room.multiplayer:
+            return
+        
+        self.message = 'It isn\'t a multiplayer game'
+        self.failed_to_connect = True
+
     def _check_room_is_active(self) -> None:
         """
         Function intended to verify whether the room is active, it means
@@ -379,7 +389,7 @@ class PlayerOneConsumer(PlayerBase):
         self.width = int(self.scope['url_route']['kwargs']['width'])
         self.connect4 = Connect4(self.height, self.width)
         
-        self.room_id = await self._create_room()
+        self.room_id = await self._create_room(True)
         self.game_room = f'room_{self.room_id}'
 
     async def _send_message_after_connection(self) -> None:
@@ -402,11 +412,11 @@ class PlayerOneConsumer(PlayerBase):
             'winning_sequence' : None,
             }))
 
-    async def _create_room(self) -> str:
+    async def _create_room(self, multiplayer:bool) -> str:
         """
         Function intended to generate a unique random room key
 
-        :param: None
+        :param multiplayer: whether is a multiplayer game
 
         :return: the room key otherwise an empty string
         """
@@ -421,6 +431,7 @@ class PlayerOneConsumer(PlayerBase):
                 continue
 
             self.room = Rooms(id = room_id,
+                              multiplayer = multiplayer,
                               height = self.height,
                               width = self.width,
                               player_one_email = self.user.email,
@@ -453,7 +464,10 @@ class PlayerTwoConsumer(PlayerBase):
 
         await self._check_room_exist()
         if self.failed_to_connect: return
-                
+
+        self._check_room_is_multiplayer()
+        if self.failed_to_connect: return        
+
         self._check_room_is_active()
         if self.failed_to_connect: return
         
@@ -538,6 +552,9 @@ class ViewerConsumer(PlayerBase):
         await self._check_room_exist()
         if self.failed_to_connect: return
         
+        self._check_room_is_multiplayer()
+        if self.failed_to_connect: return
+
         self._check_room_is_active()
         if self.failed_to_connect: return
 
@@ -606,7 +623,7 @@ class SinglePlayerConsumer(PlayerOneConsumer):
         self.width = int(self.scope['url_route']['kwargs']['width'])
         self.connect4 = Connect4(self.height, self.width)
         
-        self.room_id = await self._create_room()
+        self.room_id = await self._create_room(False)
         self.game_room = None
 
         self.room.active = True
@@ -618,14 +635,14 @@ class SinglePlayerConsumer(PlayerOneConsumer):
 
         await self.warn_player({
             'msg_type' : 'start',
-            'message' : self.room_id,
+            'message' : '',
             'game_active' : self.room.active and self.room.started,   
             'board' : self.connect4.game_board,
             'lowest_tiles': self.connect4.lowest_tiles,
             'height' : self.room.height,
             'width' : self.room.width,
             'player_one' : self.room.player_one_username,
-            'player_two' : None,
+            'player_two' : 'Robot',
             'turn' : self.connect4.turn,
             'game_won' : self.connect4.game_won,
             'game_winner' : self.connect4.game_winner,

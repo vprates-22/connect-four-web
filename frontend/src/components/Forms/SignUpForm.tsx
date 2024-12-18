@@ -27,7 +27,7 @@ const SignUpForm = () => {
 
     return (
     <>
-        <form className='LoginForm' onSubmit={submitCredentials}>
+        <div className='LoginForm' onSubmit={submitCredentials}>
             <div className='LoginLineParams'>
                 <label className='LoginLabel'>Email Adress</label>
                 <input type='text' className='LoginTextInput'
@@ -54,7 +54,7 @@ const SignUpForm = () => {
                 onChange={(e) => {setPassword(e.target.value)}}
                 onKeyDown={handleEnter}/>
             </div>
-        </form>
+        </div>
         <BasicButton idName="LoginSaveButton" innerText="Sign Up" handleClick={submitCredentials}/>    
     </>
     );

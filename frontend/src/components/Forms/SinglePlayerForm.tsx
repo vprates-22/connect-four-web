@@ -16,15 +16,15 @@ const SinglePlayerForm = () => {
     const [difficulty, setDifficulty] = useState<number>(DIFFICULTY_DEFAULT);
 
     return(
-        <form className='GameParamsForm' onSubmit={() => {}}>
+        <div className='GameParamsForm' onSubmit={() => {}}>
             <div id="GameParamsBody">
                 <GetBoardParams setHeight={setHeight} setWidth={setWidth}/>
                 <DifficultyParams setDifficulty={setDifficulty}/>
             </div>
             <ContinueButton idName="ContinueCreate" innerText="Continue"
-            toPath="/play/" wsUrl={`ws://127.0.0.1:8000/ws/single_player/${height}/${width}/${difficulty*2}/`}
+            toPath="/play/" wsUrl={`ws://127.0.0.1:8000/ws/single_player/${height}/${width}/${difficulty+1}/`}
             condition={true}/>
-        </form>
+        </div>
     )
 }
 

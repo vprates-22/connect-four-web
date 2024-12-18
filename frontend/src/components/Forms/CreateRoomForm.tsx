@@ -17,7 +17,7 @@ const CreateRoomForm = () => {
     const [timePPlayer, setTimePPlayer] = useState<number>(TIME_P_PLAYER_DEFAULT);
 
     return (
-        <form className='GameParamsForm' onSubmit={() => {}}>
+        <div className='GameParamsForm'>
             <div id="GameParamsBody">
                 <GetBoardParams setHeight={setHeight} setWidth={setWidth}/>
                 <TimeParams setTimePTurn = {setTimePTurn} setTimePPlayer = {setTimePPlayer}/>
@@ -25,7 +25,7 @@ const CreateRoomForm = () => {
             <ContinueButton idName="ContinueCreate" innerText="Continue"
             toPath="/play/" wsUrl={`ws://127.0.0.1:8000/ws/create/${height}/${width}/`}
             condition={true}/>
-        </form>
+        </div>
     );
 }
 
